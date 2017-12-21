@@ -22,14 +22,16 @@ For the features, we have a straight up 19x19 board representation of the board,
 Given my status as a patzer, a poor Go player with only around 5 games of experience, I have a very limited knowledge of the game regardless. 
 
 <h3> Step 1A: Monte Carlo Tree Search Creation </h3>
-While the information and data set is created for the prediction network, a Monte Carlo Tree Search is created, where we use a formula that factors in the popularity and success rate of each move in the data set to give each move a value. These values will be used to evaluate the position and choose the next move whenever a state is recognized in actual competitions, but not during training (we want the computer to tweak its prediction network whenever possible). An Alpha Beta search can be used, and we can test the success rate of it, but my instincts tell me that this only slows down the engine without significant advantage.
+While the information and data set is created for the prediction network, a Monte Carlo Tree Search is created, where we use a formula that factors in the popularity and success rate of each move in the data set to give each move a value. These values will be used to evaluate the position and choose the next move whenever a state is recognized in actual competitions, but not during training (we want the computer to tweak its prediction network whenever possible). 
 
+An Alpha Beta search can be used, and we can test the success rate of it, but my instincts tell me that this only slows down the engine without significant advantage.
+<br>
 Once our neural networks can successfully predict the professional moves pass a certain threshold, all the playouts by that engine will update this MCTS tree.
 
 <h3> Step 2: Reinforcement Learning </h3>
 This is the most interesting part of the project of EKAL, and is very important for the improvement of the prediction network to determine the best moves. We set a round-robin tournament of separately trained neural networks with the same data, and allow them to compete against each other. They should play exact replicas of the professional games at first. 
 
-With a certain alpha value (perhaps 0.005 based off intuition), we add the alpha value to the moves that eventually result in a win, and subtract an alpha value to the moves that eventually result in a loss. Each new move played in a position gets a value of 0.5 in the dataset, and will be subjected to the same alpha value change.
+<br> With a certain alpha value (perhaps 0.005 based off intuition), we add the alpha value to the moves that eventually result in a win, and subtract an alpha value to the moves that eventually result in a loss. Each new move played in a position gets a value of 0.5 in the dataset, and will be subjected to the same alpha value change.
 
 To create a variance of different games, random openings (i.e. we create 10 random initial moves for both sides) will be created. The computer will then officially be in uncharted territory and will have to use the regression model of professional moves to try and choose the best possible moves in those areas. 
 
