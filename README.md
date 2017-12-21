@@ -29,11 +29,11 @@ Once our neural networks can successfully predict the professional moves pass a 
 <h3> Step 2: Reinforcement Learning </h3>
 This is the most interesting part of the project of EKAL, and is very important for the improvement of the prediction network to determine the best moves. We set a round-robin tournament of separately trained neural networks with the same data, and allow them to compete against each other. They should play exact replicas of the professional games at first. 
 
-<br> With a certain alpha value (perhaps 0.005 based off intuition), we add the alpha value to the moves that eventually result in a win, and subtract an alpha value to the moves that eventually result in a loss. Each new move played in a position gets a value of 0.5 in the dataset, and will be subjected to the same alpha value change.
+With a certain alpha value (perhaps 0.005 based off intuition), we add the alpha value to the moves that eventually result in a win, and subtract an alpha value to the moves that eventually result in a loss. Each new move played in a position gets a value of 0.5 in the dataset, and will be subjected to the same alpha value change.
 
-<br>To create a variance of different games, random openings (i.e. we create 10 random initial moves for both sides) will be created. The computer will then officially be in uncharted territory and will have to use the regression model of professional moves to try and choose the best possible moves in those areas. 
+To create a variance of different games, random openings (i.e. we create 10 random initial moves for both sides) will be created. The computer will then officially be in uncharted territory and will have to use the regression model of professional moves to try and choose the best possible moves in those areas. 
 
-<br>Similarly, the computer can make random moves in the middle of a game for both sides, and then get the networks to play on from those positions. Only the moves after the random choices will have their ratings tweaked.
+Similarly, the computer can make random moves in the middle of a game for both sides, and then get the networks to play on from those positions. Only the moves after the random choices will have their ratings tweaked.
 
 
 
