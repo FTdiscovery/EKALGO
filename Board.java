@@ -138,70 +138,65 @@ public class Board {
 
 	//Analyzing stones and checking if they are connected.
 	public void findChains() {
-		for (int i=0;i<wChains.size();i++) {
-			int n = wChains.get(i)[0];
-			for (int j = 0;j<wChains.size();j++) {
-				int n2 = wChains.get(j)[0];
-				if(Math.abs(n2-n)==19) {
-					wChains.set(i, arf.appendArrays(wChains.get(i),wChains.get(j)));
-					wChains.remove(j);
-					wSurroundChains.set(i, arf.appendArrays(wSurroundChains.get(i),wSurroundChains.get(j)));
-					wSurroundChains.remove(j);
-					wSurroundChains.set(i, arf.fixSurroundReq(wChains.get(i),wSurroundChains.get(i)));
-				} //check up and down
-				if(n%19!=0) {
-					if ((n-n2)==1) {
-						wChains.set(i, arf.appendArrays(wChains.get(i),wChains.get(j)));
-						wChains.remove(j);
-						wSurroundChains.set(i, arf.appendArrays(wSurroundChains.get(i),wSurroundChains.get(j)));
-						wSurroundChains.remove(j);
-						wSurroundChains.set(i, arf.fixSurroundReq(wChains.get(i),wSurroundChains.get(i)));
-					}
-				}//can check left
-				if(n%19!=18) {
-					if ((n2-n)==1) {
-						wChains.set(i, arf.appendArrays(wChains.get(i),wChains.get(j)));
-						wChains.remove(j);
-						wSurroundChains.set(i, arf.appendArrays(wSurroundChains.get(i),wSurroundChains.get(j)));
-						wSurroundChains.remove(j);
-						wSurroundChains.set(i, arf.fixSurroundReq(wChains.get(i),wSurroundChains.get(i)));
-					}
-				} //can check right
-			}
-		}
+
 		for (int i=0;i<bChains.size();i++) {
 			int n = bChains.get(i)[0];
 			for (int j = 0;j<bChains.size();j++) {
-				int n2 = bChains.get(j)[0];
-				System.out.println(n2 + " vs. " + n);
-				if(Math.abs(n2-n)==19) {
-					bChains.set(i, arf.appendArrays(bChains.get(i),bChains.get(j)));
-					bChains.remove(j);
-					bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
-					bSurroundChains.remove(j);
-					bSurroundChains.set(i, arf.fixSurroundReq(bChains.get(i),bSurroundChains.get(i)));
-				} //check up and down
-				if(n%19!=0) {
-					if ((n-n2)==1) {
-						bChains.set(i, arf.appendArrays(bChains.get(i),bChains.get(j)));
-						bChains.remove(j);
-						bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
-						bSurroundChains.remove(j);
-						bSurroundChains.set(i, arf.fixSurroundReq(bChains.get(i),bSurroundChains.get(i)));
-					}
-				}//can check left
-				if(n%19!=18) {
-					if ((n2-n)==1) {
-						bChains.set(i, arf.appendArrays(bChains.get(i),bChains.get(j)));
-						bChains.remove(j);
-						bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
-						bSurroundChains.remove(j);
-						bSurroundChains.set(i, arf.fixSurroundReq(bChains.get(i),bSurroundChains.get(i)));
-					}
-				} //can check right
+				if (i!=j) {
+					int[] len = bChains.get(j);
+					for (int k = 0;k<len.length;k++) {
+						int n2 = len[k];
+						if(Math.abs(n2-n)==19) {
+							bChains.set(i, arf.appendArrays(bChains.get(i),bChains.get(j)));
+							bChains.remove(j);
+							bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
+							bSurroundChains.remove(j);
+							
+							//re sort
+							bSurroundChains.add(bSurroundChains.get(i));
+							bChains.add(bChains.get(i));
+							bChains.remove(i);
+							bSurroundChains.remove(i);
+							
+						} //check up and down
+						if(n%19!=0) {
+							if ((n-n2)==1) {
+								bChains.set(i, arf.appendArrays(bChains.get(i),bChains.get(j)));
+								bChains.remove(j);
+								bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
+								bSurroundChains.remove(j);
+								
+								//re sort
+								bSurroundChains.add(bSurroundChains.get(i));
+								bChains.add(bChains.get(i));
+								bChains.remove(i);
+								bSurroundChains.remove(i);
+							}
+						}//can check left
+						if(n%19!=18) {
+							if ((n2-n)==1) {
+								bChains.set(i, arf.appendArrays(bChains.get(i),bChains.get(j)));
+								bChains.remove(j);
+								bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
+								bSurroundChains.remove(j);
+								
+								//re sort
+								bSurroundChains.add(bSurroundChains.get(i));
+								bChains.add(bChains.get(i));
+								bChains.remove(i);
+								bSurroundChains.remove(i);
+							}
+						} //can check right
+					}	
+				}
+
 			}
 		}
 
+	}
+	
+	public void findChainsOnBoard() {
+		for (int m = 0;m<20;m++) findChains();
 	}
 
 
@@ -210,10 +205,16 @@ public class Board {
 		go.makeMove("A19","B");
 		go.makeMove("B19","B");
 		go.makeMove("C19","B");
+		go.makeMove("B18","B");
+		go.makeMove("A18","B");
 		go.printBoard();
 		go.updateGoCaptures();
 		go.printBoard();
-		go.findChains();
+		go.findChainsOnBoard();
+
+		
+
+
 		for (int i = 0;i<go.bChains.size();i++) {
 			System.out.println(Arrays.toString(go.bChains.get(i)));
 			System.out.println(Arrays.toString(go.bSurroundChains.get(i)));
