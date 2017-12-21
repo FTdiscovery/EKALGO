@@ -18,6 +18,12 @@ Since multiple trained neural networks with the exact same data still may not ob
 
 <h4> Board Representation </h4>
 
+<br>For the features, we have a straight up 19x19 board representation of the board, as well as the colour (black/white) to move at that position. Possible convolutions and kernels can be used to represent the data.
+
+<br>
+
+Given my status as a patzer, a poor Go player with only around 5 games of experience, I have a very limited knowledge of the game regardless. However, the goal is to get the computer to learn these trends.
+
 <h3> Step 1A: Monte Carlo Tree Search Creation </h3>
 
 <br>
