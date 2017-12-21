@@ -23,9 +23,9 @@ Given my status as a patzer, a poor Go player with only around 5 games of experi
 
 <h3> Step 1A: Monte Carlo Tree Search Creation </h3>
 While the information and data set is created for the prediction network, a Monte Carlo Tree Search is created, where we use a formula that factors in the popularity and success rate of each move in the data set to give each move a value. These values will be used to evaluate the position and choose the next move whenever a state is recognized in actual competitions, but not during training (we want the computer to tweak its prediction network whenever possible). 
-
-An Alpha Beta search can be used, and we can test the success rate of it, but my instincts tell me that this only slows down the engine without significant advantage.
 <br>
+An Alpha Beta search can be used, and we can test the success rate of it, but my instincts tell me that this only slows down the engine without significant advantage.
+<br><br>
 Once our neural networks can successfully predict the professional moves pass a certain threshold, all the playouts by that engine will update this MCTS tree.
 
 <h3> Step 2: Reinforcement Learning </h3>
