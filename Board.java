@@ -101,13 +101,19 @@ public class Board {
 		if (stoneSurround==required) GO_BOARD[i][j][1-k]=0;
 	}
 	
+	/*
+	 * Capture logic should be similar: For each stone, set the coordinates for the surroundings. If two stones have a same number for any of the coordinates, then add the arrays together.
+	 * Then check the coordinates, if all of them are surrounded, 
+	 * 
+	 * to check score, count # of black stones, + use search surroundings to find if empty spaces are surrounded by black stones.
+	 */
+	
 	
 	public static void main(String[] args) {
 		Board go = new Board();
 		go.makeMove("A19","W");
 		go.makeMove("B19","B");
 		go.makeMove("A18","B");
-		go.makeMove("B18","B");
 		go.printBoard();
 		go.updateGoCaptures();
 		go.printBoard();
