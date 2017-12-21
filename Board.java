@@ -138,7 +138,58 @@ public class Board {
 
 	//Analyzing stones and checking if they are connected.
 	public void findChains() {
+		for (int i=0;i<wChains.size();i++) {
+			int n = wChains.get(i)[0];
+			for (int j = 0;j<wChains.size();j++) {
+				if (i!=j) {
+					int[] len = wChains.get(j);
+					for (int k = 0;k<len.length;k++) {
+						int n2 = len[k];
+						if(Math.abs(n2-n)==19) {
+							wChains.set(i, arf.appendArrays(wChains.get(i),wChains.get(j)));
+							wChains.remove(j);
+							wSurroundChains.set(i, arf.appendArrays(wSurroundChains.get(i),wSurroundChains.get(j)));
+							wSurroundChains.remove(j);
 
+							//re sort
+							wSurroundChains.add(arf.inaccStones(wChains.get(i), arf.removeDuplicates(wSurroundChains.get(i))));
+							wChains.add(wChains.get(i));
+							wChains.remove(i);
+							wSurroundChains.remove(i);
+
+						} //check up and down
+						if(n%19!=0) {
+							if ((n-n2)==1) {
+								wChains.set(i, arf.appendArrays(wChains.get(i),wChains.get(j)));
+								wChains.remove(j);
+								wSurroundChains.set(i, arf.appendArrays(wSurroundChains.get(i),wSurroundChains.get(j)));
+								wSurroundChains.remove(j);
+
+								//re sort
+								wSurroundChains.add(arf.inaccStones(wChains.get(i), arf.removeDuplicates(wSurroundChains.get(i))));
+								wChains.add(wChains.get(i));
+								wChains.remove(i);
+								wSurroundChains.remove(i);
+							}
+						}//can check left
+						if(n%19!=18) {
+							if ((n2-n)==1) {
+								wChains.set(i, arf.appendArrays(wChains.get(i),wChains.get(j)));
+								wChains.remove(j);
+								wSurroundChains.set(i, arf.appendArrays(wSurroundChains.get(i),wSurroundChains.get(j)));
+								wSurroundChains.remove(j);
+
+								//re sort
+								wSurroundChains.add(arf.inaccStones(wChains.get(i), arf.removeDuplicates(wSurroundChains.get(i))));
+								wChains.add(wChains.get(i));
+								wChains.remove(i);
+								wSurroundChains.remove(i);
+							}
+						} //can check right
+					}	
+				}
+			}
+		}
 		for (int i=0;i<bChains.size();i++) {
 			int n = bChains.get(i)[0];
 			for (int j = 0;j<bChains.size();j++) {
@@ -151,13 +202,13 @@ public class Board {
 							bChains.remove(j);
 							bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
 							bSurroundChains.remove(j);
-							
+
 							//re sort
-							bSurroundChains.add(bSurroundChains.get(i));
+							bSurroundChains.add(arf.inaccStones(bChains.get(i), arf.removeDuplicates(bSurroundChains.get(i))));
 							bChains.add(bChains.get(i));
 							bChains.remove(i);
 							bSurroundChains.remove(i);
-							
+
 						} //check up and down
 						if(n%19!=0) {
 							if ((n-n2)==1) {
@@ -165,9 +216,9 @@ public class Board {
 								bChains.remove(j);
 								bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
 								bSurroundChains.remove(j);
-								
+
 								//re sort
-								bSurroundChains.add(bSurroundChains.get(i));
+								bSurroundChains.add(arf.inaccStones(bChains.get(i), arf.removeDuplicates(bSurroundChains.get(i))));
 								bChains.add(bChains.get(i));
 								bChains.remove(i);
 								bSurroundChains.remove(i);
@@ -179,9 +230,9 @@ public class Board {
 								bChains.remove(j);
 								bSurroundChains.set(i, arf.appendArrays(bSurroundChains.get(i),bSurroundChains.get(j)));
 								bSurroundChains.remove(j);
-								
+
 								//re sort
-								bSurroundChains.add(bSurroundChains.get(i));
+								bSurroundChains.add(arf.inaccStones(bChains.get(i), arf.removeDuplicates(bSurroundChains.get(i))));
 								bChains.add(bChains.get(i));
 								bChains.remove(i);
 								bSurroundChains.remove(i);
@@ -189,14 +240,13 @@ public class Board {
 						} //can check right
 					}	
 				}
-
 			}
 		}
 
 	}
-	
+
 	public void findChainsOnBoard() {
-		for (int m = 0;m<20;m++) findChains();
+		for (int m = 0;m<20;m++) findChains(); //20 is arbritrary, can be more in order to juggle the whole find chain algorithm.
 	}
 
 
@@ -212,7 +262,7 @@ public class Board {
 		go.printBoard();
 		go.findChainsOnBoard();
 
-		
+
 
 
 		for (int i = 0;i<go.bChains.size();i++) {
