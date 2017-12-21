@@ -31,7 +31,7 @@ Once our neural networks can successfully predict the professional moves pass a 
 <h3> Step 2: Reinforcement Learning </h3>
 This is the most interesting part of the project of EKAL, and is very important for the improvement of the prediction network to determine the best moves. We set a round-robin tournament of separately trained neural networks with the same data, and allow them to compete against each other. They should play exact replicas of the professional games at first. 
 
-<br> With a certain alpha value (perhaps 0.005 based off intuition), we add the alpha value to the moves that eventually result in a win, and subtract an alpha value to the moves that eventually result in a loss. Each new move played in a position gets a value of 0.5 in the dataset, and will be subjected to the same alpha value change.
+<br> With a certain alpha value (perhaps 0.005 based off intuition), we add the alpha value to the moves that eventually result in a win, and subtract an alpha value to the moves that eventually result in a loss. Each new move played in a position gets a value of 0.5 in the dataset, and will be subjected to the same alpha value change. Each new move played in a position that already has a professional move will get a slightly lower initial value (a gamma value of 0.47 perhaps, but they can be changed). This ensures that the majority of the networks will still give a preference for the professional move, but the minority of networks that prefer this move have a chance to overturn the one originally in the dataset. 
 
 To create a variance of different games, random openings (i.e. we create 10 random initial moves for both sides) will be created. The computer will then officially be in uncharted territory and will have to use the regression model of professional moves to try and choose the best possible moves in those areas. 
 
@@ -40,7 +40,7 @@ Similarly, the non-corrupt cyber arbiter of the tournament can make random moves
 <br>
 The goal is to update the policy network and the MCTS tree search.
 
-
+<br><br> NOTE: The terms alpha and gamma are not actual ones. I just made them up.
 
 
 <br>
