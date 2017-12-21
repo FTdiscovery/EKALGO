@@ -1,6 +1,9 @@
 package ekalGO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
+
 
 public class Board {
 
@@ -13,6 +16,11 @@ public class Board {
 	int[] CAPTURES;
 	String[][] PRINTED;
 	String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+	
+	ArrayList <int[]> wChains = new ArrayList<int[]>();
+	ArrayList <int[]> wSurroundChains = new ArrayList<int[]>();
+	ArrayList <int[]> bChains = new ArrayList<int[]>();
+	ArrayList <int[]> bSurroundChains = new ArrayList<int[]>();
 			
 	public Board() {
 		GO_BOARD = new double[19][19][2];
@@ -61,11 +69,31 @@ public class Board {
 	public void updateGoCaptures() {
 		for (int i = 0;i<19;i++) {
 			for (int j = 0;j<19;j++) {
-				if(GO_BOARD[i][j][1]==1) searchSurroundings(i,j,0);
-				if(GO_BOARD[i][j][0]==1) searchSurroundings(i,j,1);
+				int[] array = {19*i+j};
+				if(GO_BOARD[i][j][1]==1) {searchSurroundings(i,j,0); //this captures single stones
+				wChains.add(array);
+				wSurroundChains.add(surroundReq(i,j));
+				}
+				if(GO_BOARD[i][j][0]==1) {searchSurroundings(i,j,1); //this capture single stones
+				bChains.add(array);
+				bSurroundChains.add(surroundReq(i,j));
+				}
 			}
 		}
 	}
+	
+	public int[] surroundReq(int i, int j) {
+		List<Integer> ba = new ArrayList<Integer>();
+		if(i!=0) ba.add(((i-1)*19+j));
+		if(i!=18) ba.add((i+1)*19+j);
+		if(j!=0) ba.add((i)*19+j-1);
+		if(j!=18) ba.add((i)*19+j+1);
+		int[] newArray = new int[ba.size()];
+		for (int k = 0;k<newArray.length;k++) newArray[k]=ba.get(k);
+		return newArray;
+	}
+	
+	
 	
 	public void searchSurroundings(int i, int j, int k) {
 		int required = 4;
@@ -105,7 +133,7 @@ public class Board {
 	 * Capture logic should be similar: For each stone, set the coordinates for the surroundings. If two stones have a same number for any of the coordinates, then add the arrays together.
 	 * Then check the coordinates, if all of them are surrounded, 
 	 * 
-	 * to check score, count # of black stones, + use search surroundings to find if empty spaces are surrounded by black stones.
+	 * to check score, count # of black stones, then use search surroundings to find if empty spaces are completely surrounded by black stones.
 	 */
 	
 	
@@ -114,6 +142,9 @@ public class Board {
 		go.makeMove("A19","W");
 		go.makeMove("B19","B");
 		go.makeMove("A18","B");
+		go.makeMove("B18","W");
+		go.makeMove("C18","B");
+		go.makeMove("B17","B");
 		go.printBoard();
 		go.updateGoCaptures();
 		go.printBoard();
