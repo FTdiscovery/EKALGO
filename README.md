@@ -18,10 +18,11 @@ Since multiple trained neural networks with the exact same data still may not ob
 
 <h4> Board Representation </h4>
 For the features, we have a straight up 19x19 board representation of the board, as well as the colour (black/white) to move at that position. Possible convolutions and kernels can be used to represent the data.
-<br>
-Given my status as a patzer, a poor Go player with only around 5 games of experience, I have a very limited knowledge of the game regardless. However, the goal is to get the computer to learn these trends.
+<br><br>
+Given my status as a patzer, a poor Go player with only around 5 games of experience, I have a very limited knowledge of the game regardless. 
 
 <h3> Step 1A: Monte Carlo Tree Search Creation </h3>
+While the information and data set is created for the prediction network, a Monte Carlo Tree Search is created, where we use a formula that factors in the popularity and success rate of each move in the data set to give each move a value. Those branching values will be used whenever a state is recognized in actual competitions, but not during training (we want the computer to tweak its prediction network whenever possible). Once our neural networks can successfully predict the professional moves pass a certain threshold, all the playouts by that engine will update this MCTS tree.
 
 <br>
 <br>
