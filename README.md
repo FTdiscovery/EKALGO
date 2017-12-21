@@ -35,7 +35,7 @@ This is the most interesting part of the project of EKAL, and is very important 
 
 To create a variance of different games, random openings (i.e. we create 10 random initial moves for both sides) will be created. The computer will then officially be in uncharted territory and will have to use the regression model of professional moves to try and choose the best possible moves in those areas. 
 
-Similarly, the computer can make random moves in the middle of a game for both sides, and then get the networks to play on from those positions. Only the moves after the random choices will have their ratings tweaked.
+Similarly, the non-corrupt cyber arbiter of the tournament can make random moves in the middle of a game for both sides, and then get the networks to play on from those positions. Only the moves after the random choices will have their ratings tweaked.
 <br>
 <br>
 The goal is to update the policy network and the MCTS tree search.
