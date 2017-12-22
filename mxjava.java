@@ -282,17 +282,6 @@ public class mxjava {
 		out10.close();
 	}
 
-	public static double[] appendArrays(double[] a, double[] b) {
-		double[] newArr = new double[a.length+b.length];
-		for (int i = 0;i<a.length;i++) {
-			newArr[i]=a[i];
-		}
-		for (int i=0;i<b.length;i++) {
-			newArr[a.length+i]=b[i];
-		}
-		return newArr;
-	}
-
 	public static double sigmoidPackage(double x, boolean deriv) {
 		if (deriv) {
 			return x*(1-x);

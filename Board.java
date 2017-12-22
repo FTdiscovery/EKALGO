@@ -29,7 +29,6 @@ public class Board {
 	ArrayList<int[]> wSurChains = new ArrayList<int[]>();
 
 
-
 	public Board() {
 		GO_BOARD = new double[19][19][2];
 		PRINTED = new String[19][19];
@@ -42,6 +41,9 @@ public class Board {
 		return "+";
 	}
 
+	public void captureScore() {
+		System.out.println("Black Captures: " + CAPTURES[0] + "\nWhite Captures: " + CAPTURES[1]);
+	}
 	public void printBoard() {
 		System.out.println("CURRENT STATE:\n\n   A B C D E F G H J K L M N O P Q R S T");
 		for (int i = 0;i<19;i++){
@@ -138,8 +140,8 @@ public class Board {
 		}
 		if (stoneSurround==required) GO_BOARD[i][j][1-k]=0;
 		
-		if (k==1 && stoneSurround==required) System.out.println("Captured Black Stone: " + Arrays.toString(bStones.get(i)));
-		if (k==0 && stoneSurround==required) System.out.println("Captured White Stone: " + Arrays.toString(wStones.get(i)));
+		if (k==1 && stoneSurround==required) { CAPTURES[1]++; System.out.println("Captured Black Stone: " + Arrays.toString(bStones.get(i))); }
+		if (k==0 && stoneSurround==required) { CAPTURES[0]++; System.out.println("Captured White Stone: " + Arrays.toString(wStones.get(i))); }
 	}
 
 	/*
@@ -418,11 +420,11 @@ public class Board {
 	public void captureDeadStones() {
 		//capture dead chains
 		for (int i = 0; i<bChains.size();i++) {
-			if (ifSurroundedByW(bSurChains.get(i))) { System.out.println("Captured Black Chain: " + Arrays.toString(bChains.get(i))); 
+			if (ifSurroundedByW(bSurChains.get(i))) { System.out.println("Captured Black Chain: " + Arrays.toString(bChains.get(i))); CAPTURES[1]+=bChains.get(i).length;
 			removeStones(bChains.get(i));} 
 		}
 		for (int i = 0; i<wChains.size();i++) {
-			if (ifSurroundedByB(wSurChains.get(i))) { System.out.println("Captured White Chain: " + Arrays.toString(wChains.get(i))); 
+			if (ifSurroundedByB(wSurChains.get(i))) { System.out.println("Captured White Chain: " + Arrays.toString(wChains.get(i)));  CAPTURES[0]+=wChains.get(i).length;
 			removeStones(wChains.get(i)); }
 		}
 		//capture individuals
@@ -448,7 +450,6 @@ public class Board {
 		go.makeMove("F18", "B");
 		go.makeMove("D18", "B");
 		
-		go.printBoard();
 		go.updateBoard();
 		//go.printStoneConnections();
 		go.printBoard();
