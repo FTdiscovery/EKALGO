@@ -379,11 +379,34 @@ public class Board {
 			System.out.println("SURROUNDINGS:  "+Arrays.toString(bSurChains.get(i)));
 		}
 	}
+	
+	public boolean ifSurroundedByW(int[] require) {
+		//checks if a chain is surrounded
+		int covered = 0;
+		for (int i = 0;i<require.length;i++) {
+			if (GO_BOARD[require[i]/19][require[i]%19][1]==1)covered++;
+		}
+		return covered==require.length;
+		
+	}
+	public boolean ifSurroundedByB(int[] require) {
+		//checks if a chain is surrounded
+		int covered = 0;
+		for (int i = 0;i<require.length;i++) {
+			if (GO_BOARD[require[i]/19][require[i]%19][0]==1)covered++;
+		}
+		return covered==require.length;
+		
+	}
 
 	public static void main(String[] args) {
 		Board go = new Board();
-		go.makeMove("A19","B");
-		go.makeMove("F11","W");
+		go.makeMove("A19","W");
+		go.makeMove("F11","B");
+		go.makeMove("F12","B");
+		go.makeMove("G11","B");
+		go.makeMove("G13","B");
+		go.makeMove("G12","B");
 		go.updateBoard();
 		go.printBoard();
 
