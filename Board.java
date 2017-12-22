@@ -230,23 +230,50 @@ public class Board {
 			}
 		}
 
-		for (int b = 1;b<10;b++) { //b is arbitrary value.
-			for (int i = 0;i<bChains.size()-1;i++) {
+		//forward check
+		for (int b = 1;b<bChains.size()-2;b++) { //b is arbitrary value.
+			for (int i = 0;i<bChains.size()-b;i++) {
 				for (int j = 0;j<bChains.get(i).length;j++) {
-					
+
 					if (bChains.size()>1 && bChains.size()>i+b){
+						//System.out.println("DIRECTORY: " + i + " SEARCHING " + (i+b) + " OUT OF " + bChains.size());
+						//System.out.println(Arrays.toString(bChains.get(i)) + " in " + Arrays.toString(bChains.get(i+b))+ "?");
 						if (arf.inArray(bChains.get(i)[j],bChains.get(i+b))) {
+							//System.out.print(" Yes.\n");
 							bChains.set(i,arf.removeDuplicates(arf.appendArrays(bChains.get(i), bChains.get(i+b))));
 							bSurChains.set(i,arf.removeDuplicates(arf.appendArrays(bSurChains.get(i), bSurChains.get(i+b))));
 							bChains.remove(i+b);
 							bSurChains.remove(i+b);
 						}
 					}
-					
+
 				}
 			}
 		}
-		
+
+		//backward check
+		for (int b = 1;b<bChains.size()-2;b++) { //b is arbitrary value.
+			for (int i = bChains.size()-1;i>=0;i--) {
+				for (int j = 0;j<bChains.get(i).length;j++) {
+
+					if (bChains.size()>1 && i-b>=0){
+						//System.out.println("DIRECTORY: " + i + " SEARCHING " + (i-b) + " OUT OF " + bChains.size());
+						//System.out.println(Arrays.toString(bChains.get(i)) + " in " + Arrays.toString(bChains.get(i-b))+ "?");
+						if (arf.inArray(bChains.get(i)[j],bChains.get(i-b))) {
+							//System.out.print(" Yes.\n");
+							bChains.set(i,arf.removeDuplicates(arf.appendArrays(bChains.get(i), bChains.get(i-b))));
+							bSurChains.set(i,arf.removeDuplicates(arf.appendArrays(bSurChains.get(i), bSurChains.get(i-b))));
+							bChains.remove(i-b);
+							bSurChains.remove(i-b);
+						}
+					}
+				}
+			}
+		}
+
+
+
+
 		for (int i = 0;i<bChains.size();i++) {
 			bSurChains.set(i, arf.inaccStones(bChains.get(i), bSurChains.get(i)));
 			System.out.println("STONES:  "+Arrays.toString(bChains.get(i)));
@@ -271,6 +298,8 @@ public class Board {
 		go.makeMove("E19","B");
 		go.makeMove("F19","B");
 		go.makeMove("E5","B");
+		go.makeMove("C17","B");
+		go.makeMove("D19","B");
 		go.makeMove("E6","B");
 		go.makeMove("E7","B");
 		go.makeMove("E9","B");
@@ -280,6 +309,9 @@ public class Board {
 		go.makeMove("H19","B");
 		go.makeMove("A17","B");
 		go.makeMove("E4","B");
+		go.makeMove("O5","B");
+		go.makeMove("O6","B");
+		go.makeMove("P6","B");
 		go.updateGoCaptures();
 		go.printBoard();
 
