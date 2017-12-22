@@ -78,16 +78,18 @@ public class Board {
 		for (int i = 0;i<19;i++) {
 			for (int j = 0;j<19;j++) {
 				int[] array = {19*i+j};
-				if(GO_BOARD[i][j][1]==1) {searchSurroundings(i,j,0); //this captures single stones
+				if(GO_BOARD[i][j][1]==1) {
 				wStones.add(array);
 				wSurStones.add(surroundReq(i,j));
 				}
-				if(GO_BOARD[i][j][0]==1) {searchSurroundings(i,j,1); //this capture single stones
+				if(GO_BOARD[i][j][0]==1) {
 				bStones.add(array);
 				bSurStones.add(surroundReq(i,j));
 				}
 			}
 		}
+		findChains();
+		captureDeadStones();
 	}
 
 	public int[] surroundReq(int i, int j) {
@@ -135,6 +137,9 @@ public class Board {
 			if(GO_BOARD[i][j+1][k]==1) stoneSurround++;
 		}
 		if (stoneSurround==required) GO_BOARD[i][j][1-k]=0;
+		
+		if (k==1 && stoneSurround==required) System.out.println("Captured Black Stone: " + Arrays.toString(bStones.get(i)));
+		if (k==0 && stoneSurround==required) System.out.println("Captured White Stone: " + Arrays.toString(wStones.get(i)));
 	}
 
 	/*
@@ -353,6 +358,14 @@ public class Board {
 			}
 		}
 		
+		//get rid of wrong stones
+		for (int i = 0;i<wChains.size();i++) {
+			wSurChains.set(i, arf.inaccStones(wChains.get(i), wSurChains.get(i)));
+		}
+		for (int i = 0;i<bChains.size();i++) {
+			bSurChains.set(i, arf.inaccStones(bChains.get(i), bSurChains.get(i)));
+		}
+		
 		if (!connectionsB) {
 			bChains=bStones;
 			bSurChains=bSurStones;
@@ -367,14 +380,12 @@ public class Board {
 
 		System.out.println("-----\nFOR WHITE:\n-----");
 		for (int i = 0;i<wChains.size();i++) {
-			wSurChains.set(i, arf.inaccStones(wChains.get(i), wSurChains.get(i)));
 			System.out.println("STONES:  "+Arrays.toString(wChains.get(i)));
 			System.out.println("SURROUNDINGS:  "+Arrays.toString(wSurChains.get(i)));
 		}
 		
 		System.out.println("-----\nFOR BLACK:\n-----");
 		for (int i = 0;i<bChains.size();i++) {
-			bSurChains.set(i, arf.inaccStones(bChains.get(i), bSurChains.get(i)));
 			System.out.println("STONES:  "+Arrays.toString(bChains.get(i)));
 			System.out.println("SURROUNDINGS:  "+Arrays.toString(bSurChains.get(i)));
 		}
@@ -387,7 +398,6 @@ public class Board {
 			if (GO_BOARD[require[i]/19][require[i]%19][1]==1)covered++;
 		}
 		return covered==require.length;
-		
 	}
 	public boolean ifSurroundedByB(int[] require) {
 		//checks if a chain is surrounded
@@ -396,25 +406,52 @@ public class Board {
 			if (GO_BOARD[require[i]/19][require[i]%19][0]==1)covered++;
 		}
 		return covered==require.length;
-		
+	}
+	
+	public void removeStones(int[] stones) {
+		for (int i=0;i<stones.length;i++) {
+			GO_BOARD[stones[i]/19][stones[i]%19][0]=0;
+			GO_BOARD[stones[i]/19][stones[i]%19][1]=0;
+		}
+	}
+	
+	public void captureDeadStones() {
+		//capture dead chains
+		for (int i = 0; i<bChains.size();i++) {
+			if (ifSurroundedByW(bSurChains.get(i))) { System.out.println("Captured Black Chain: " + Arrays.toString(bChains.get(i))); 
+			removeStones(bChains.get(i));} 
+		}
+		for (int i = 0; i<wChains.size();i++) {
+			if (ifSurroundedByB(wSurChains.get(i))) { System.out.println("Captured White Chain: " + Arrays.toString(wChains.get(i))); 
+			removeStones(wChains.get(i)); }
+		}
+		//capture individuals
+		for (int i = 0;i<bStones.size();i++) {
+			searchSurroundings(bStones.get(i)[0]/19,bStones.get(i)[0]%19,1);
+		}
+		for (int i = 0;i<wStones.size();i++) {
+			searchSurroundings(wStones.get(i)[0]/19,wStones.get(i)[0]%19,0);
+		}
 	}
 
 	public static void main(String[] args) {
 		Board go = new Board();
-		go.makeMove("A19","W");
-		go.makeMove("F11","B");
-		go.makeMove("F12","B");
-		go.makeMove("G11","B");
-		go.makeMove("G13","B");
-		go.makeMove("G12","B");
-		go.updateBoard();
+		go.makeMove("A19","B");
+		go.makeMove("B19", "B");
+		go.makeMove("A18", "W");
+		go.makeMove("B18", "W");
+		go.makeMove("C19", "W");
+		
+		go.makeMove("E18", "W");
+		go.makeMove("E19", "B");
+		go.makeMove("E17", "B");
+		go.makeMove("F18", "B");
+		go.makeMove("D18", "B");
+		
 		go.printBoard();
-
-		go.findChains();
-		go.printStoneConnections();
-
-
-
-
+		go.updateBoard();
+		//go.printStoneConnections();
+		go.printBoard();
+		
 	}
 }
