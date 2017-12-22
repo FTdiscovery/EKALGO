@@ -17,10 +17,11 @@ public class Board {
 	String[][] PRINTED;
 	String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 
-	ArrayList <int[]> wChains = new ArrayList<int[]>();
-	ArrayList <int[]> wSurroundChains = new ArrayList<int[]>();
-	ArrayList <int[]> bChains = new ArrayList<int[]>();
-	ArrayList <int[]> bSurroundChains = new ArrayList<int[]>();
+	ArrayList <int[]> wStones = new ArrayList<int[]>();
+	ArrayList <int[]> wSurStones = new ArrayList<int[]>();
+	ArrayList <int[]> bStones = new ArrayList<int[]>();
+	ArrayList <int[]> bSurStones = new ArrayList<int[]>();
+
 
 	public Board() {
 		GO_BOARD = new double[19][19][2];
@@ -71,12 +72,12 @@ public class Board {
 			for (int j = 0;j<19;j++) {
 				int[] array = {19*i+j};
 				if(GO_BOARD[i][j][1]==1) {searchSurroundings(i,j,0); //this captures single stones
-				wChains.add(array);
-				wSurroundChains.add(surroundReq(i,j));
+				wStones.add(array);
+				wSurStones.add(surroundReq(i,j));
 				}
 				if(GO_BOARD[i][j][0]==1) {searchSurroundings(i,j,1); //this capture single stones
-				bChains.add(array);
-				bSurroundChains.add(surroundReq(i,j));
+				bStones.add(array);
+				bSurStones.add(surroundReq(i,j));
 				}
 			}
 		}
@@ -138,12 +139,12 @@ public class Board {
 
 	//Analyzing stones and checking if they are connected.
 	public void findChains() {
-		for (int i=0;i<wChains.size();i++) {
-			for (int b = 0;b<wChains.get(i).length;b++) {
-				int n = wChains.get(i)[b];
-				for (int j = i;j<wChains.size();j++) {
+		for (int i=0;i<wStones.size();i++) {
+			for (int b = 0;b<wStones.get(i).length;b++) {
+				int n = wStones.get(i)[b];
+				for (int j = i;j<wStones.size();j++) {
 					if (i!=j) {
-						int[] len = wChains.get(j);
+						int[] len = wStones.get(j);
 						for (int k = 0;k<len.length;k++) {
 							int n2 = len[k];
 							if(Math.abs(n2-n)==19) {
@@ -164,25 +165,46 @@ public class Board {
 				}
 			}
 		}
-		for (int i=0;i<bChains.size();i++) {
-			for (int b = 0;b<bChains.get(i).length;b++) {
-				int n = bChains.get(i)[b];
-				for (int j = i;j<bChains.size();j++) {
+
+
+		//WORK ON BLACK FIRST
+
+		int[][] bStoneConnects = new int[bStones.size()][];
+		for (int i = 0;i<bStones.size();i++) {
+			bStoneConnects[i]=bStones.get(i);
+		}
+		int[][] bStoneSurrounds = new int[bStones.size()][];
+		for (int i = 0;i<bStones.size();i++) {
+			bStoneSurrounds[i]=bSurStones.get(i);
+		}
+		for (int i=0;i<bStones.size();i++) {
+			for (int b = 0;b<bStones.get(i).length;b++) {
+				int n = bStones.get(i)[b];
+				for (int j = i;j<bStones.size();j++) {
 					if (i!=j) {
-						int[] len = bChains.get(j);
+						int[] len = bStones.get(j);
 						for (int k = 0;k<len.length;k++) {
 							int n2 = len[k];
 							if(Math.abs(n2-n)==19) {
-								System.out.println(n2 + " is connected to " + n);
+								//System.out.println(n2 + " is connected to " + n);
+								bStoneConnects[i]=arf.appendArrays(bStoneConnects[i], bStones.get(j));
+								bStoneSurrounds[i]=arf.appendArrays(bStoneSurrounds[i], bSurStones.get(j));
+								bStoneSurrounds[i] = arf.inaccStones(bStoneConnects[i], arf.removeDuplicates(bStoneSurrounds[i]));
 							} //check up and down
 							if(n%19!=0) {
 								if ((n-n2)==1) {
-									System.out.println(n2 + " is connected to " + n);
+									//System.out.println(n2 + " is connected to " + n);
+									bStoneConnects[i]=arf.appendArrays(bStoneConnects[i], bStones.get(j));
+									bStoneSurrounds[i]=arf.appendArrays(bStoneSurrounds[i], bSurStones.get(j));
+									bStoneSurrounds[i] = arf.inaccStones(bStoneConnects[i], arf.removeDuplicates(bStoneSurrounds[i]));
 								}
 							}//can check left
 							if(n%19!=18) {
 								if ((n2-n)==1) {
-									System.out.println(n2 + " is connected to " + n);
+									//System.out.println(n2 + " is connected to " + n);
+									bStoneConnects[i]=arf.appendArrays(bStoneConnects[i], bStones.get(j));
+									bStoneSurrounds[i]=arf.appendArrays(bStoneSurrounds[i], bSurStones.get(j));
+									bStoneSurrounds[i] = arf.inaccStones(bStoneConnects[i], arf.removeDuplicates(bStoneSurrounds[i]));
 								}
 							} //can check right
 						}	
@@ -190,6 +212,49 @@ public class Board {
 				}
 			}
 		}
+
+		//Connections for each stone (that are right or beneath it) are ordered.
+		ArrayList<int[]> bChains = new ArrayList<int[]>();
+		ArrayList<int[]> bSurChains = new ArrayList<int[]>();
+
+		for (int i = 0;i<bStones.size()-1;i++) {
+			for (int j = 0;j<bStoneConnects[i].length;j++) {
+				if (arf.inArray(bStoneConnects[i][j],bStoneConnects[i+1])) {
+					bChains.add(arf.removeDuplicates(arf.appendArrays(bStoneConnects[i], bStoneConnects[i+1])));
+					bSurChains.add(arf.removeDuplicates(arf.appendArrays(bStoneSurrounds[i], bStoneSurrounds[i+1])));
+				}
+				else if (bStoneConnects[i].length==1){
+					bChains.add(bStoneConnects[i]);
+					bSurChains.add(bStoneSurrounds[i]);
+				}
+			}
+		}
+
+		for (int b = 1;b<10;b++) { //b is arbitrary value.
+			for (int i = 0;i<bChains.size()-1;i++) {
+				for (int j = 0;j<bChains.get(i).length;j++) {
+					
+					if (bChains.size()>1 && bChains.size()>i+b){
+						if (arf.inArray(bChains.get(i)[j],bChains.get(i+b))) {
+							bChains.set(i,arf.removeDuplicates(arf.appendArrays(bChains.get(i), bChains.get(i+b))));
+							bSurChains.set(i,arf.removeDuplicates(arf.appendArrays(bSurChains.get(i), bSurChains.get(i+b))));
+							bChains.remove(i+b);
+							bSurChains.remove(i+b);
+						}
+					}
+					
+				}
+			}
+		}
+		
+		for (int i = 0;i<bChains.size();i++) {
+			bSurChains.set(i, arf.inaccStones(bChains.get(i), bSurChains.get(i)));
+			System.out.println("STONES:  "+Arrays.toString(bChains.get(i)));
+			System.out.println("SURROUNDINGS:  "+Arrays.toString(bSurChains.get(i)));
+		}
+
+
+
 
 	}
 
@@ -203,14 +268,21 @@ public class Board {
 		go.makeMove("C18","B");
 		go.makeMove("D18","B");
 		go.makeMove("E19","B");
+		go.makeMove("E19","B");
 		go.makeMove("F19","B");
 		go.makeMove("E5","B");
 		go.makeMove("E6","B");
 		go.makeMove("E7","B");
-		go.printBoard();
+		go.makeMove("E9","B");
+		go.makeMove("E10","B");
+		go.makeMove("F13","B");
+		go.makeMove("G19","B");
+		go.makeMove("H19","B");
+		go.makeMove("A17","B");
+		go.makeMove("E4","B");
 		go.updateGoCaptures();
 		go.printBoard();
-		
+
 		go.findChains();
 
 
