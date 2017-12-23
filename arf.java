@@ -10,6 +10,15 @@ public class arf {
 	 * arf stands for Array Functions. Refers to a few array functions that will be used in terms of capturing pieces.
 	 */
 	
+	public static double[] expertAction(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		double[] action = new double[361];
+		int i = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		int j = 19-Integer.parseInt(move.substring(1)); //this is row
+		action[(j*19)+i]=0.5;
+		return action;
+	}
+			
 	public static int[] inaccStones(int[] stones, int[] wrongSurround) {
 		ArrayList<Integer> ky = new ArrayList<Integer>();
 		for (int i = 0;i<wrongSurround.length;i++) {

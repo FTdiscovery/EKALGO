@@ -1,5 +1,8 @@
 package ekalGO;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 /*
  * Here we begin the exploration of EKAL - evste'na kalpak yo'nuron eyeshkomyod, a concept of Dutrum Mesnovich, 2009
  * Developed in theory by Mesnovich at University of Ralyas, Piray.
@@ -16,4 +19,13 @@ package ekalGO;
 
 public class Main {
 
+	public static void main(String[] args) throws IOException {
+		String[] files = {"AG0_AGM_001"};
+		Library SLBase = new Library(files);
+		SLBase.createDataset(false);
+		
+		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,100,0.5);
+		EKAL.trainNetwork(10);
+	}
+	
 }

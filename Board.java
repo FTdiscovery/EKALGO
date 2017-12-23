@@ -16,6 +16,7 @@ public class Board {
 	int[] CAPTURES;
 	String[][] PRINTED;
 	String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+	int turns = 0;
 
 	ArrayList <int[]> wStones = new ArrayList<int[]>();
 	ArrayList <int[]> wSurStones = new ArrayList<int[]>();
@@ -27,6 +28,11 @@ public class Board {
 	ArrayList<int[]> bSurChains = new ArrayList<int[]>();
 	ArrayList<int[]> wChains = new ArrayList<int[]>();
 	ArrayList<int[]> wSurChains = new ArrayList<int[]>();
+
+	int[][] quickBChains;
+	int[][] quickWChains;
+	int[][] quickBSurChains;
+	int[][] quickWSurChains;
 
 
 	public Board() {
@@ -56,7 +62,7 @@ public class Board {
 		}
 	}
 
-	public void makeMove(String move, String colour) {
+	public void customMove(String move, String colour) {
 		int[] directory = new int[2];
 		directory[0] = ALPHABET.indexOf(move.substring(0,1)); //this is column
 		directory[1] = 19-Integer.parseInt(move.substring(1)); //this is row
@@ -64,34 +70,40 @@ public class Board {
 		GO_BOARD[directory[1]][directory[0]][turn]=1;
 	}
 
+	public void makeMove(String move) {
+		int[] directory = new int[2];
+		directory[0] = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		directory[1] = 19-Integer.parseInt(move.substring(1)); //this is row
+		int whom = turns%2;
+		GO_BOARD[directory[1]][directory[0]][whom]=1;
+		turns++;
+	}
+
 	public double[] BoardToState() {
-		double[] output = new double[722];
+		double[] output = new double[723];
 		for (int i = 0;i<19;i++) {
 			for (int j = 0;j<19;j++) {
 				output[38*i+2*j] = GO_BOARD[i][j][0];
 				output[38*i+2*j+1] = GO_BOARD[i][j][1];
 			}
 		}
+		output[722]=turns%2;
 		return output;
 	}
 
 	//Set the rules of Go, Captures for single stones done.
 	public void updateBoard() {
-		for (int i = 0;i<19;i++) {
-			for (int j = 0;j<19;j++) {
-				int[] array = {19*i+j};
-				if(GO_BOARD[i][j][1]==1) {
-				wStones.add(array);
-				wSurStones.add(surroundReq(i,j));
-				}
-				if(GO_BOARD[i][j][0]==1) {
-				bStones.add(array);
-				bSurStones.add(surroundReq(i,j));
-				}
-			}
-		}
 		findChains();
-		captureDeadStones();
+		if (turns%2==0) captureDeadStonesB();
+		else captureDeadStonesW();
+		wStones.clear();
+		wSurStones.clear();
+		bStones.clear();
+		bSurStones.clear();
+		bChains.clear();
+		wChains.clear();
+		bSurChains.clear();
+		wSurChains.clear();
 	}
 
 	public int[] surroundReq(int i, int j) {
@@ -106,7 +118,6 @@ public class Board {
 	}
 
 
-
 	public void searchSurroundings(int i, int j, int k) {
 		int required = 4;
 		int stoneSurround = 0;
@@ -115,33 +126,37 @@ public class Board {
 			//check top
 		}
 		else {
-			if(GO_BOARD[i-1][j][k]==1) stoneSurround++;
+			if(GO_BOARD[i-1][j][k]==1 && GO_BOARD[i-1][j][1-k]==0) stoneSurround++;
 		}
 		if (j==0){
 			required--;
 			//check left
 		}
 		else {
-			if(GO_BOARD[i][j-1][k]==1) stoneSurround++;
+			if(GO_BOARD[i][j-1][k]==1 && GO_BOARD[i][j-1][1-k]==0) stoneSurround++;
 		}
 		if (i==18) {
 			required--;
 			//check bottom
 		}
 		else {
-			if(GO_BOARD[i+1][j][k]==1) stoneSurround++;
+			if(GO_BOARD[i+1][j][k]==1 && GO_BOARD[i+1][j][1-k]==0) { stoneSurround++; }
 		}
 		if (j==18){
 			required--;
 			//check right
 		}
 		else {
-			if(GO_BOARD[i][j+1][k]==1) stoneSurround++;
+			if(GO_BOARD[i][j+1][k]==1 && GO_BOARD[i][j+1][1-k]==0) stoneSurround++;
 		}
-		if (stoneSurround==required) GO_BOARD[i][j][1-k]=0;
-		
-		if (k==1 && stoneSurround==required) { CAPTURES[1]++; System.out.println("Captured Black Stone: " + Arrays.toString(bStones.get(i))); }
-		if (k==0 && stoneSurround==required) { CAPTURES[0]++; System.out.println("Captured White Stone: " + Arrays.toString(wStones.get(i))); }
+		if (stoneSurround==required) { GO_BOARD[i][j][1-k]=0; GO_BOARD[i][j][k]=0;}
+
+		if (k==1 && stoneSurround==required && GO_BOARD[i][j][1-k]==0) { 
+			CAPTURES[1]++; //System.out.println("Captured Black Stone: [" + (i*19+j)+"]"); 
+		}
+		if (k==0 && stoneSurround==required && GO_BOARD[i][j][1-k]==0) { 
+			CAPTURES[0]++; //System.out.println("Captured White Stone: [" + (i*19+j)+"]"); 
+		}
 	}
 
 	/*
@@ -153,6 +168,27 @@ public class Board {
 
 	//Analyzing stones and checking if they are connected.
 	public void findChains() {
+		wStones.clear();
+		wSurStones.clear();
+		bStones.clear();
+		bSurStones.clear();
+		bChains.clear();
+		wChains.clear();
+		bSurChains.clear();
+		wSurChains.clear();
+		for (int i = 0;i<19;i++) {
+			for (int j = 0;j<19;j++) {
+				int[] array = {19*i+j};
+				if(GO_BOARD[i][j][1]==1) {
+					wStones.add(array);
+					wSurStones.add(surroundReq(i,j));
+				}
+				if(GO_BOARD[i][j][0]==1) {
+					bStones.add(array);
+					bSurStones.add(surroundReq(i,j));
+				}
+			}
+		}
 		//FOR WHITE
 		boolean connectionsW = false;
 		int[][] wStoneConnects = new int[wStones.size()][];
@@ -201,12 +237,13 @@ public class Board {
 				}
 			}
 		}
-
+		while (wStones.size()>wStoneConnects.length) wStones.remove(wStones.size()-1);
 		for (int i = 0;i<wStones.size()-1;i++) {
 			for (int j = 0;j<wStoneConnects[i].length;j++) {
-				if (arf.inArray(wStoneConnects[i][j],wStoneConnects[i+1])) {
-					wChains.add(arf.removeDuplicates(arf.appendArrays(wStoneConnects[i], wStoneConnects[i+1])));
-					wSurChains.add(arf.removeDuplicates(arf.appendArrays(wStoneSurrounds[i], wStoneSurrounds[i+1])));
+				while (wStones.size()>wStoneConnects.length) wStones.remove(wStones.size()-1);
+				if (arf.inArray(wStoneConnects[i][j],wStoneConnects[Math.min(i+1, wStoneConnects.length-1)])) {
+					wChains.add(arf.removeDuplicates(arf.appendArrays(wStoneConnects[i], wStoneConnects[Math.min(i+1, wStoneConnects.length-1)])));
+					wSurChains.add(arf.removeDuplicates(arf.appendArrays(wStoneSurrounds[i], wStoneSurrounds[Math.min(i+1, wStoneConnects.length-1)])));
 				}
 				else if (wStoneConnects[i].length==1){
 					wChains.add(wStoneConnects[i]);
@@ -305,12 +342,18 @@ public class Board {
 				}
 			}
 		}
-		
+		quickBChains = bStoneConnects;
+		quickBSurChains = bStoneSurrounds;
+		quickWChains = wStoneConnects;
+		quickWSurChains = wStoneSurrounds;
+
+		while (bStones.size()>bStoneConnects.length) bStones.remove(bStones.size()-1);
 		for (int i = 0;i<bStones.size()-1;i++) {
 			for (int j = 0;j<bStoneConnects[i].length;j++) {
+				while (bStones.size()>bStoneConnects.length) bStones.remove(bStones.size()-1);
 				if (arf.inArray(bStoneConnects[i][j],bStoneConnects[i+1])) {
-					bChains.add(arf.removeDuplicates(arf.appendArrays(bStoneConnects[i], bStoneConnects[i+1])));
-					bSurChains.add(arf.removeDuplicates(arf.appendArrays(bStoneSurrounds[i], bStoneSurrounds[i+1])));
+					bChains.add((arf.appendArrays(bStoneConnects[i], bStoneConnects[i+1])));
+					bSurChains.add((arf.appendArrays(bStoneSurrounds[i], bStoneSurrounds[i+1])));
 				}
 				else if (bStoneConnects[i].length==1){
 					bChains.add(bStoneConnects[i]);
@@ -318,6 +361,7 @@ public class Board {
 				}
 			}
 		}
+		//while (bChains.size()>bStones.size()) bChains.remove(bChains.size()-1);
 
 		//forward check
 		for (int b = 1;b<bChains.size()-2;b++) { //b is arbitrary value.
@@ -344,7 +388,6 @@ public class Board {
 		for (int b = 1;b<bChains.size()-2;b++) { //b is arbitrary value.
 			for (int i = bChains.size()-1;i>=0;i--) {
 				for (int j = 0;j<bChains.get(i).length;j++) {
-
 					if (bChains.size()>1 && i-b>=0){
 						//System.out.println("DIRECTORY: " + i + " SEARCHING " + (i-b) + " OUT OF " + bChains.size());
 						//System.out.println(Arrays.toString(bChains.get(i)) + " in " + Arrays.toString(bChains.get(i-b))+ "?");
@@ -359,7 +402,7 @@ public class Board {
 				}
 			}
 		}
-		
+
 		//get rid of wrong stones
 		for (int i = 0;i<wChains.size();i++) {
 			wSurChains.set(i, arf.inaccStones(wChains.get(i), wSurChains.get(i)));
@@ -367,32 +410,24 @@ public class Board {
 		for (int i = 0;i<bChains.size();i++) {
 			bSurChains.set(i, arf.inaccStones(bChains.get(i), bSurChains.get(i)));
 		}
-		
-		if (!connectionsB) {
-			bChains=bStones;
-			bSurChains=bSurStones;
-		}
-		if (!connectionsW) {
-			wChains=wStones;
-			wSurChains=wSurStones;
-		}
+
 	}
 
 	public void printStoneConnections() {
-
+		findChains();
 		System.out.println("-----\nFOR WHITE:\n-----");
 		for (int i = 0;i<wChains.size();i++) {
 			System.out.println("STONES:  "+Arrays.toString(wChains.get(i)));
 			System.out.println("SURROUNDINGS:  "+Arrays.toString(wSurChains.get(i)));
 		}
-		
+
 		System.out.println("-----\nFOR BLACK:\n-----");
 		for (int i = 0;i<bChains.size();i++) {
 			System.out.println("STONES:  "+Arrays.toString(bChains.get(i)));
 			System.out.println("SURROUNDINGS:  "+Arrays.toString(bSurChains.get(i)));
 		}
 	}
-	
+
 	public boolean ifSurroundedByW(int[] require) {
 		//checks if a chain is surrounded
 		int covered = 0;
@@ -409,50 +444,78 @@ public class Board {
 		}
 		return covered==require.length;
 	}
-	
+
 	public void removeStones(int[] stones) {
 		for (int i=0;i<stones.length;i++) {
 			GO_BOARD[stones[i]/19][stones[i]%19][0]=0;
 			GO_BOARD[stones[i]/19][stones[i]%19][1]=0;
 		}
 	}
-	
-	public void captureDeadStones() {
+
+	public void captureDeadStonesW() {
+		for (int i = 0; i<wChains.size();i++) {
+			if (ifSurroundedByB(wSurChains.get(i))) { //System.out.println("Captured White Chain: " + Arrays.toString(wChains.get(i)));  
+			CAPTURES[0]+=wChains.get(i).length;
+			removeStones(wChains.get(i)); }
+		}
+		for (int i = 0;i<wStones.size();i++) {
+			searchSurroundings(wStones.get(i)[0]/19,wStones.get(i)[0]%19,0);
+		}
+		for (int i = 0; i<quickWChains.length;i++) {
+			if (ifSurroundedByB(quickWSurChains[i])) { //System.out.println("Captured White Chain: " + Arrays.toString(quickWChains[i])); 
+			CAPTURES[1]+=quickWChains[i].length;
+			removeStones(quickWChains[i]);} 
+		}
+	}
+	public void captureDeadStonesB() {
+
 		//capture dead chains
 		for (int i = 0; i<bChains.size();i++) {
-			if (ifSurroundedByW(bSurChains.get(i))) { System.out.println("Captured Black Chain: " + Arrays.toString(bChains.get(i))); CAPTURES[1]+=bChains.get(i).length;
+			if (ifSurroundedByW(bSurChains.get(i))) { //System.out.println("Captured Black Chain: " + Arrays.toString(bChains.get(i))); 
+			CAPTURES[1]+=bChains.get(i).length;
 			removeStones(bChains.get(i));} 
 		}
-		for (int i = 0; i<wChains.size();i++) {
-			if (ifSurroundedByB(wSurChains.get(i))) { System.out.println("Captured White Chain: " + Arrays.toString(wChains.get(i)));  CAPTURES[0]+=wChains.get(i).length;
-			removeStones(wChains.get(i)); }
+
+		//capture dead,smaller chains
+		for (int i = 0; i<quickBChains.length;i++) {
+			if (ifSurroundedByW(quickBSurChains[i])) { //System.out.println("Captured Black Chain: " + Arrays.toString(quickBChains[i])); 
+			CAPTURES[1]+=quickBChains[i].length;
+			removeStones(quickBChains[i]);} 
 		}
 		//capture individuals
 		for (int i = 0;i<bStones.size();i++) {
 			searchSurroundings(bStones.get(i)[0]/19,bStones.get(i)[0]%19,1);
 		}
-		for (int i = 0;i<wStones.size();i++) {
-			searchSurroundings(wStones.get(i)[0]/19,wStones.get(i)[0]%19,0);
-		}
+
+
 	}
 
 	public static void main(String[] args) {
 		Board go = new Board();
-		go.makeMove("A19","B");
-		go.makeMove("B19", "B");
-		go.makeMove("A18", "W");
-		go.makeMove("B18", "W");
-		go.makeMove("C19", "W");
-		
-		go.makeMove("E18", "W");
-		go.makeMove("E19", "B");
-		go.makeMove("E17", "B");
-		go.makeMove("F18", "B");
-		go.makeMove("D18", "B");
-		
+		go.customMove("A19","B");
+		go.customMove("B19", "B");
+		go.customMove("A18", "W");
+		go.customMove("B18", "W");
+		go.customMove("C19", "W");
+
+		go.customMove("E18", "W");
+		go.customMove("E19", "B");
+		go.customMove("E17", "B");
+		go.customMove("F18", "B");
+		go.customMove("D18", "B");
+		go.customMove("D17", "B");
+		go.customMove("D16", "B");
+		go.customMove("D15", "B");
+		go.customMove("E15", "B");
+		go.customMove("F15", "B");
+		go.customMove("G15", "B");
+		go.customMove("C15", "B");
+		go.customMove("B15", "B");
+		go.customMove("B14", "B");
+
 		go.updateBoard();
-		//go.printStoneConnections();
+		go.printStoneConnections();
 		go.printBoard();
-		
+
 	}
 }
