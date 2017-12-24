@@ -86,9 +86,6 @@ public class ConvolutionsNN {
 		f1.averagePooling(poolingWidth, poolingHeight);
 
 		double[] imageProcessed = mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a1),mxjava.twoDtoOne(b1)),mxjava.connectArrays(mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a1),mxjava.twoDtoOne(b1)), mxjava.connectArrays(mxjava.twoDtoOne(c1),mxjava.twoDtoOne(d1))), mxjava.connectArrays(mxjava.twoDtoOne(e1),mxjava.twoDtoOne(f1))));
-		for (int i = 0;i<5;i++) {
-			imageProcessed = mxjava.connectArrays(imageProcessed, imageProcessed);
-		}
 		
 		System.out.println(Arrays.toString(imageProcessed)+"\n-----");
 

@@ -32,6 +32,7 @@ public class arf {
 		}
 		int col = max%19;
 		int row = 19-(max/19);
+		System.out.println(array[max]);
 		return ALPHABET.split("")[col]+row;
 	}
 			
