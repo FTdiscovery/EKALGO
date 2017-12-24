@@ -41,7 +41,7 @@ public class mxjava {
 	
 	public static double[][] loadSynapse0(GoBrain brain, String direct) throws IOException {
 		double[][] newSyn = new double[brain.synapse0.length][brain.synapse0[0].length];
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse0";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse0";
 		FileReader stock = new FileReader (documents);
 		BufferedReader b1 = new BufferedReader(stock);
 		String word;
@@ -57,7 +57,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse1(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse1";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse1";
 		FileReader stock = new FileReader (documents);
 		BufferedReader b2 = new BufferedReader(stock);
 		String word;
@@ -70,7 +70,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse2(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse2";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse2";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -83,7 +83,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse3(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse3";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse3";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -96,7 +96,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse4(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse4";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse4";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -109,7 +109,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse5(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse5";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse5";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -122,7 +122,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse6(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse6";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse6";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -135,7 +135,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse7(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse7";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse7";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -148,7 +148,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapse8(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse8";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse8";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -161,7 +161,7 @@ public class mxjava {
 		return newSyn;
 	}
 	public static double[][] loadSynapseFinal(GoBrain brain, String direct) throws IOException {
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "SynapseFinal";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "SynapseFinal";
 		FileReader stock = new FileReader (documents);
 		BufferedReader buffer = new BufferedReader(stock);
 		String word;
@@ -176,14 +176,10 @@ public class mxjava {
 	
 	
 	public static void outputSynapses(GoBrain brain, String direct) throws IOException {
-		System.out.println("updating synapses...");
-		System.out.println("updating synapses...");
-		System.out.println("updating synapses...");
-		System.out.println("updating synapses...");
-		System.out.println("updating synapses...");
+		System.out.println("Updated Synapses.");
 		//Put all the information into a document. Print first layer of synapses. Stock Information not stored here.
 		int buffSize = 8192*16;
-		String documents = System.getProperty ("user.home") + "/Documents/Ralyas Language Training/" + direct + "Synapses/" + direct + "Synapse";
+		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse";
 		//I am so lazy and tired.
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(documents + "0"),buffSize));
 		PrintWriter out2 = new PrintWriter(new BufferedWriter(new FileWriter(documents + "1"),buffSize));

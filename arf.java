@@ -14,7 +14,7 @@ public class arf {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		double[] action = new double[361];
 		for (int d = 0;d<action.length;d++) {
-			action[d]=-1;
+			action[d]=0;
 		}
 		int i = ALPHABET.indexOf(move.substring(0,1)); //this is column
 		int j = 19-Integer.parseInt(move.substring(1)); //this is row

@@ -1,7 +1,5 @@
 package ekalGO;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public class ConvolutionsNN {
@@ -18,8 +16,8 @@ public class ConvolutionsNN {
 	static double[][] COPY = {{0,0,0},{0,1,0},{0,0,0}};
 	static double[][] SHIFT_LEFT = {{0,0,0},{1,0,0},{0,0,0}};
 	
-	static double[][] KERNEL1 = createRandomKernel();
-	static double[][] KERNEL2 = createRandomKernel();
+	static double[][] KERNEL1 = {{1.4,1.6,1.9},{2.1,5.1,1.3},{0.6,1.87,2.31}};;
+	static double[][] KERNEL2 = {{2.5,4.4,3.5},{3.3,1.7,0.6},{1.8,2.11,4.05}};;
 	static double[][] KERNEL3 = createRandomKernel();
 	
 	public static double[][] createRandomKernel() {
