@@ -23,9 +23,21 @@ public class Main {
 		String[] files = {"AG0_AGM_001"};
 		Library SLBase = new Library(files);
 		SLBase.createDataset(false);
-		
-		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,100,0.5);
-		EKAL.trainNetwork(10);
+
+		int NODES_PER_LAYER = 1250;
+		double LEARN_RATE = 0.00005;
+
+		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
+		for (int j = 0;j<1000;j++) {
+			EKAL.trainNetwork(5);
+			System.out.println("\n-------\nITERATION #"+(j+1)+"\n");
+			//check how accurate they are
+			for (int i = 0;i<5;i++) {
+				//System.out.println(Arrays.toString((EKAL.predict(SLBase.states[i]))));
+				System.out.println("Chosen move by EKAL: " +arf.chosenAction(EKAL.predict(SLBase.states[i])));
+				System.out.println("Chosen move by AG0: " +arf.chosenAction(SLBase.actions[i])+"\n---");
+			}
+		}
 	}
-	
+
 }

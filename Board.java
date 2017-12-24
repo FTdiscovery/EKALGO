@@ -85,6 +85,10 @@ public class Board {
 			for (int j = 0;j<19;j++) {
 				output[38*i+2*j] = GO_BOARD[i][j][0];
 				output[38*i+2*j+1] = GO_BOARD[i][j][1];
+				if (output[38*i+2*j]==0 && output[38*i+2*j+1]==0) {
+					output[38*i+2*j+1]=-1;
+					output[38*i+2*j]=-1;
+				}
 			}
 		}
 		output[722]=turns%2;
@@ -455,16 +459,16 @@ public class Board {
 	public void captureDeadStonesW() {
 		for (int i = 0; i<wChains.size();i++) {
 			if (ifSurroundedByB(wSurChains.get(i))) { //System.out.println("Captured White Chain: " + Arrays.toString(wChains.get(i)));  
-			CAPTURES[0]+=wChains.get(i).length;
-			removeStones(wChains.get(i)); }
+				CAPTURES[0]+=wChains.get(i).length;
+				removeStones(wChains.get(i)); }
 		}
 		for (int i = 0;i<wStones.size();i++) {
 			searchSurroundings(wStones.get(i)[0]/19,wStones.get(i)[0]%19,0);
 		}
 		for (int i = 0; i<quickWChains.length;i++) {
 			if (ifSurroundedByB(quickWSurChains[i])) { //System.out.println("Captured White Chain: " + Arrays.toString(quickWChains[i])); 
-			CAPTURES[1]+=quickWChains[i].length;
-			removeStones(quickWChains[i]);} 
+				CAPTURES[1]+=quickWChains[i].length;
+				removeStones(quickWChains[i]);} 
 		}
 	}
 	public void captureDeadStonesB() {
@@ -472,15 +476,15 @@ public class Board {
 		//capture dead chains
 		for (int i = 0; i<bChains.size();i++) {
 			if (ifSurroundedByW(bSurChains.get(i))) { //System.out.println("Captured Black Chain: " + Arrays.toString(bChains.get(i))); 
-			CAPTURES[1]+=bChains.get(i).length;
-			removeStones(bChains.get(i));} 
+				CAPTURES[1]+=bChains.get(i).length;
+				removeStones(bChains.get(i));} 
 		}
 
 		//capture dead,smaller chains
 		for (int i = 0; i<quickBChains.length;i++) {
 			if (ifSurroundedByW(quickBSurChains[i])) { //System.out.println("Captured Black Chain: " + Arrays.toString(quickBChains[i])); 
-			CAPTURES[1]+=quickBChains[i].length;
-			removeStones(quickBChains[i]);} 
+				CAPTURES[1]+=quickBChains[i].length;
+				removeStones(quickBChains[i]);} 
 		}
 		//capture individuals
 		for (int i = 0;i<bStones.size();i++) {

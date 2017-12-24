@@ -13,10 +13,26 @@ public class arf {
 	public static double[] expertAction(String move) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		double[] action = new double[361];
+		for (int d = 0;d<action.length;d++) {
+			action[d]=0.2;
+		}
 		int i = ALPHABET.indexOf(move.substring(0,1)); //this is column
 		int j = 19-Integer.parseInt(move.substring(1)); //this is row
-		action[(j*19)+i]=0.5;
+		action[(j*19)+i]=0.9;
 		return action;
+	}
+	
+	public static String chosenAction(double[] array) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int max = 0;
+		for (int i = 1;i<array.length;i++) {
+			if (array[i]>array[max]) {
+				max=i;
+			}
+		}
+		int col = max%19;
+		int row = 19-(max/19);
+		return ALPHABET.split("")[col]+row;
 	}
 			
 	public static int[] inaccStones(int[] stones, int[] wrongSurround) {

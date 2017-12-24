@@ -10,11 +10,34 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
+
 /*
  * This gives us a lot of the main linear algebra/matrix based functions required for our artificial neural network. It's ugly like me, and lazy like me.
  */
 
 public class mxjava {
+	
+	public static double[] connectArrays(double[] a, double[] b) {
+		double[] newArray = new double[a.length+b.length];
+		for (int i = 0;i<a.length;i++) {
+			newArray[i] = a[i];
+		}
+		for (int j = 0;j<b.length;j++) {
+			newArray[j+a.length] = b[j];
+		}
+		return newArray;
+	}
+	
+	public static double[] twoDtoOne(FeatureMap a) {
+		double[] neuralNetworkInput = new double[a.processedPhoto.length*a.processedPhoto[0].length];
+		for (int i = 0;i<a.processedPhoto.length;i++) {
+			for (int j = 0;j<a.processedPhoto[0].length;j++) {
+				int directory = j+i*a.processedPhoto[0].length;
+				neuralNetworkInput[directory] = a.processedPhoto[i][j];
+			}
+		}
+		return neuralNetworkInput;
+	}
 	
 	public static double[][] loadSynapse0(GoBrain brain, String direct) throws IOException {
 		double[][] newSyn = new double[brain.synapse0.length][brain.synapse0[0].length];
@@ -288,12 +311,35 @@ public class mxjava {
 		}
 		return 1/(1+Math.pow(Math.E,-x));
 	}
+	
+	//CNN SPECIFIC
+	public static int convolution(double[][] imagePiece,double[][] filter) {
+		int newVal = 0;
+		for (int i = 0; i < filter.length; i++) { 
+			for (int j = 0; j < filter[0].length; j++) { 
+				newVal += imagePiece[i][j]*filter[filter.length-i-1][filter[0].length-j-1];
+				//newVal += rawPhoto[i][j]*filter[i][j];
+				
+			}
+		}
+		return newVal;
+	}
+	
+	public static int[][] randomFilter() {
+		int[][] filter = new int[3][3];
+		for (int i = 0;i<filter.length;i++) {
+			for (int j = 0; j<filter[0].length;j++) {
+				filter[i][j] = (int) (Math.random()*4-2); //NUMBERS ARE TOO BIG, GIVE NO FLEXIBILITY
+			}
+		}
+		return filter;
+	}
 
 	public static double[][] synapseLayer(int inputs, int outputs) {
 		double[][] LAYER = new double[inputs][outputs];
 		for (int i = 0;i<inputs;i++) {
 			for (int j = 0;j<outputs;j++) {
-				LAYER[i][j] = (Math.random()*2)-1;
+				LAYER[i][j] = (Math.random()*1.8)-0.9;
 			}
 		}
 		return LAYER;
