@@ -24,8 +24,8 @@ public class Main {
 		Library SLBase = new Library(files);
 		SLBase.createDataset(false);
 
-		int NODES_PER_LAYER = 1250;
-		double LEARN_RATE = 0.00005;
+		int NODES_PER_LAYER = 1000;
+		double LEARN_RATE = 0.0005;
 
 		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
 		for (int j = 0;j<1000;j++) {

@@ -18,11 +18,15 @@ public class ConvolutionsNN {
 	static double[][] COPY = {{0,0,0},{0,1,0},{0,0,0}};
 	static double[][] SHIFT_LEFT = {{0,0,0},{1,0,0},{0,0,0}};
 	
+	static double[][] KERNEL1 = createRandomKernel();
+	static double[][] KERNEL2 = createRandomKernel();
+	static double[][] KERNEL3 = createRandomKernel();
+	
 	public static double[][] createRandomKernel() {
 		double[][] randomKernel = new double[3][3];
 		for (int i = 0;i<3;i++) {
 			for (int j = 0;j<3;j++) {
-				randomKernel[i][j]= Math.random();
+				randomKernel[i][j]= Math.random()*10;
 			}
 		}
 		return randomKernel;
@@ -42,19 +46,50 @@ public class ConvolutionsNN {
 
 		//FIRST LAYER
 		FeatureMap a = new FeatureMap(WHITE_STONE_MAP); //YOU CAN DETERMINE THE PARENT OF THE FEATURE MAP
-		a.applyConvolution(TOP_SOBEL);
+		a.applyConvolution(KERNEL1);
 
 		FeatureMap b = new FeatureMap(WHITE_STONE_MAP); 
-		b.applyConvolution(EDGE_DETECT_2);
+		b.applyConvolution(KERNEL2);
 
-		FeatureMap c = new FeatureMap(BLACK_STONE_MAP); 
-		c.applyConvolution(RIGHT_SOBEL);
+		FeatureMap c = new FeatureMap(WHITE_STONE_MAP); 
+		c.applyConvolution(ENHANCE);
 
 		FeatureMap d = new FeatureMap(BLACK_STONE_MAP); 
-		d.applyConvolution(EDGE_DETECT_2);
+		d.applyConvolution(KERNEL1);
+	
+		FeatureMap e = new FeatureMap(BLACK_STONE_MAP); 
+		e.applyConvolution(KERNEL2);
 
-		double[] imageProcessed = mxjava.connectArrays(mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a),mxjava.twoDtoOne(b)), mxjava.connectArrays(mxjava.twoDtoOne(c),mxjava.twoDtoOne(d))), mxjava.connectArrays(mxjava.twoDtoOne(c),mxjava.twoDtoOne(d)));;
+		FeatureMap f = new FeatureMap(BLACK_STONE_MAP); 
+		f.applyConvolution(ENHANCE);
+		
+		//SECOND LAYER: POOL EACH ONE
+		int poolingWidth = 19;
+		int poolingHeight = 19;
 
+		FeatureMap a1 = new FeatureMap(a.processedPhoto);
+		a1.averagePooling(poolingWidth, poolingHeight); //width * height
+
+		FeatureMap b1 = new FeatureMap(b.processedPhoto);
+		b1.averagePooling(poolingWidth, poolingHeight);
+
+		FeatureMap c1 = new FeatureMap(c.processedPhoto);
+		c1.averagePooling(poolingWidth, poolingHeight);
+		
+		FeatureMap d1 = new FeatureMap(d.processedPhoto);
+		d1.averagePooling(poolingWidth, poolingHeight);
+		
+		FeatureMap e1 = new FeatureMap(e.processedPhoto);
+		e1.averagePooling(poolingWidth, poolingHeight);
+		
+		FeatureMap f1 = new FeatureMap(f.processedPhoto);
+		f1.averagePooling(poolingWidth, poolingHeight);
+
+		double[] imageProcessed = mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a1),mxjava.twoDtoOne(b1)),mxjava.connectArrays(mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a1),mxjava.twoDtoOne(b1)), mxjava.connectArrays(mxjava.twoDtoOne(c1),mxjava.twoDtoOne(d1))), mxjava.connectArrays(mxjava.twoDtoOne(e1),mxjava.twoDtoOne(f1))));
+		for (int i = 0;i<5;i++) {
+			imageProcessed = mxjava.connectArrays(imageProcessed, imageProcessed);
+		}
+		
 		System.out.println(Arrays.toString(imageProcessed)+"\n-----");
 
 		return imageProcessed;

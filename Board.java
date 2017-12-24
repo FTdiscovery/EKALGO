@@ -80,6 +80,7 @@ public class Board {
 	}
 
 	public double[] BoardToState() {
+		/*
 		double[] output = new double[723];
 		for (int i = 0;i<19;i++) {
 			for (int j = 0;j<19;j++) {
@@ -93,6 +94,8 @@ public class Board {
 		}
 		output[722]=turns%2;
 		return output;
+		*/
+		return ConvolutionsNN.processed(GO_BOARD);
 	}
 
 	//Set the rules of Go, Captures for single stones done.

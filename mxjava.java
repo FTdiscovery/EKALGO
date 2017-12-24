@@ -339,7 +339,7 @@ public class mxjava {
 		double[][] LAYER = new double[inputs][outputs];
 		for (int i = 0;i<inputs;i++) {
 			for (int j = 0;j<outputs;j++) {
-				LAYER[i][j] = (Math.random()*1.8)-0.9;
+				LAYER[i][j] = (Math.random()*1.5)-0.75;
 			}
 		}
 		return LAYER;

@@ -14,11 +14,11 @@ public class arf {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		double[] action = new double[361];
 		for (int d = 0;d<action.length;d++) {
-			action[d]=0.2;
+			action[d]=-1;
 		}
 		int i = ALPHABET.indexOf(move.substring(0,1)); //this is column
 		int j = 19-Integer.parseInt(move.substring(1)); //this is row
-		action[(j*19)+i]=0.9;
+		action[(j*19)+i]=0.5;
 		return action;
 	}
 	
