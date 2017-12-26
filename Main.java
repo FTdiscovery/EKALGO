@@ -21,8 +21,9 @@ import java.util.Arrays;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		String[] files = {"AG0_AGM_001"};
-		Library SLBase = new Library(files);
+		String[] files = {"AG0_AGM_001","AG0_AGM_002","AG0_AGM_006"};//,"AG0_AGM_001"};
+		boolean[] flip180 = {false,true,true};//,false};
+		Library SLBase = new Library(files,flip180);
 		SLBase.createDataset(false);
 
 		int NODES_PER_LAYER = 120;
@@ -30,7 +31,7 @@ public class Main {
 
 
 		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
-		EKAL.momentum = 0.4;
+		EKAL.momentum = 0.7;
 
 		//Download synapses.
 		boolean download = true;
@@ -47,20 +48,21 @@ public class Main {
 			EKAL.finalSynapse = mxjava.loadSynapseFinal(EKAL, "EKALGO120");	
 		}
 
-		double sc = 0;
+		int sc = 0;
 		for (int i = 0;i<SLBase.states.length;i++) {
 			String action =  arf.chosenAction(EKAL.predict(SLBase.states[i]));
 			String actual = arf.chosenAction(SLBase.actions[i]);
-			if (actual.equals(action)) sc+=(1.0/SLBase.states.length);
+			if (actual.equals(action)) sc+=(1);
 		}
-		System.out.println("SAVED SYNAPSES: " + (sc*100) +"% correct.");
+		System.out.println("SAVED SYNAPSES: " + (sc) +" out of " + SLBase.states.length + " correct.");
 
 
 		boolean training = true;
+		double topScore = 0;
 		//Training.
 		if (training) {
-			for (int j = 0;j<5000;j++) {
-				EKAL.trainNetwork(2);
+			for (int j = 0;j<500000;j++) {
+				EKAL.trainNetwork(1);
 				System.out.println("\n-------\nITERATION #"+((j+1)*2)+"\n");
 				double score = 0;
 				//check how accurate they are
@@ -74,7 +76,10 @@ public class Main {
 					if (actual.equals(action)) score+=(1.0/SLBase.states.length);
 				}
 				System.out.println((score*100) +"% correct.");
-				if (score>0.2 && j%200==0) mxjava.outputSynapses(EKAL,"EKALGO120");
+				if (score>topScore) {
+					mxjava.outputSynapses(EKAL,"EKALGO120");
+					topScore = score;
+				}
 			}
 		}
 	}

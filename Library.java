@@ -20,6 +20,7 @@ public class Library {
 
 	//Go Books!!!
 	String[] books;
+	boolean[] flipAction180;
 	String documents = System.getProperty ("user.home") + "/Documents/Go Books/";
 	ArrayList<double[]> tStates = new ArrayList<>();
 	ArrayList<double[]> tActions = new ArrayList<>();
@@ -27,8 +28,9 @@ public class Library {
 	double[][] states;
 	double[][] actions;
 
-	public Library(String[] a) {
+	public Library(String[] a, boolean[] b) {
 		books = a;
+		flipAction180 = b;
 	}
 
 	public void createDataset(boolean watchGame) throws IOException {
@@ -39,14 +41,28 @@ public class Library {
 			String word;
 			ArrayList<String> moves = new ArrayList<>();
 			while ((word = buffer.readLine()) != null) {
-				moves.add(word);
+				if (flipAction180[i]) {
+					moves.add(mxjava.flipAction180(word));
+				}
+				else {
+					moves.add(word);
+				}
+				
 			}
 
 			//Game will be downloaded as "moves" arraylist, for which the play out should happen immediately.
 			Board temp = new Board();
 			for (int k = 0;k<moves.size();k++) {
-				tStates.add(temp.BoardToState());
-				tActions.add(arf.expertAction(moves.get(k)));
+				int stateSeen = arf.stateAlreadySeen(tStates,temp.BoardToState());
+				if (stateSeen<0) {
+					tStates.add(temp.BoardToState());
+					tActions.add(arf.expertAction(moves.get(k)));
+				}
+				else {
+					System.out.println("Duplicate State.");
+					tActions.set(stateSeen, arf.compoundActions(tActions.get(stateSeen),arf.expertAction(moves.get(k))));
+				}
+				
 				temp.makeMove(moves.get(k));
 				temp.updateBoard();
 				if (watchGame) {
@@ -69,9 +85,5 @@ public class Library {
 			actions[i]=tActions.get(i);
 		}
 		
-		
-		//Clear ArrayList.
-		tStates.clear();
-		tActions.clear();
 	}
 }

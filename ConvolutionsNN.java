@@ -84,7 +84,7 @@ public class ConvolutionsNN {
 
 		double[] imageProcessed = mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a1),mxjava.twoDtoOne(b1)),mxjava.connectArrays(mxjava.connectArrays(mxjava.connectArrays(mxjava.twoDtoOne(a1),mxjava.twoDtoOne(b1)), mxjava.connectArrays(mxjava.twoDtoOne(c1),mxjava.twoDtoOne(d1))), mxjava.connectArrays(mxjava.twoDtoOne(e1),mxjava.twoDtoOne(f1))));
 		
-		System.out.println(Arrays.toString(imageProcessed)+"\n-----");
+		//System.out.println(Arrays.toString(imageProcessed)+"\n-----");
 
 		return imageProcessed;
 	}

@@ -175,6 +175,11 @@ public class mxjava {
 		return newSyn;
 	}
 	
+	public static String flipAction180(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column		
+		return ALPHABET.split("")[18-directory]+(20-Integer.parseInt(move.substring(1)));
+	}
 	
 	public static void outputSynapses(GoBrain brain, String direct) throws IOException {
 		System.out.println("updating synapses...");

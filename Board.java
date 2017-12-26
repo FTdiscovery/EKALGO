@@ -46,7 +46,12 @@ public class Board {
 		if (a[1]==1) return "o";
 		return "+";
 	}
-
+	
+	public String flipAction180(String move) {
+		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column		
+		return ALPHABET.split("")[18-directory]+(20-Integer.parseInt(move.substring(1)));
+	}
+	
 	public void captureScore() {
 		System.out.println("Black Captures: " + CAPTURES[0] + "\nWhite Captures: " + CAPTURES[1]);
 	}
@@ -517,7 +522,9 @@ public class Board {
 		go.customMove("C15", "B");
 		go.customMove("B15", "B");
 		go.customMove("B14", "B");
-
+		
+		
+		System.out.println(mxjava.flipAction180("Q4"));
 		go.updateBoard();
 		go.printStoneConnections();
 		go.printBoard();

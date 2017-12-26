@@ -10,6 +10,32 @@ public class arf {
 	 * arf stands for Array Functions. Refers to a few array functions that will be used in terms of capturing pieces.
 	 */
 	
+	public static int stateAlreadySeen(ArrayList<double[]> states, double[] current) {
+		for (int i = 0;i<states.size();i++) {
+			if (sameArray(states.get(i),current)) return i;
+		}
+		return -1;
+	}
+	
+	public static boolean sameArray(double[] a,double[] b) {
+		if (a.length!=b.length) return false;
+		for (int i = 0;i<a.length;i++) {
+			if (a[i]!=b[i]) return false;
+		}
+		return true;
+	}
+	
+	public static double[] compoundActions(double[] a, double[] b) {
+		double[] action = new double[a.length];
+		for (int i = 0;i<a.length;i++) {
+			action[i]=a[i];
+			if (a[i]==0) {
+				action[i]+=b[i];
+			}
+		}
+		return action;
+	}
+	
 	public static double[] expertAction(String move) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		double[] action = new double[361];
