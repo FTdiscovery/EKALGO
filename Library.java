@@ -44,7 +44,7 @@ public class Library {
 
 			//Game will be downloaded as "moves" arraylist, for which the play out should happen immediately.
 			Board temp = new Board();
-			for (int k = 0;k<20;k++) {
+			for (int k = 0;k<moves.size();k++) {
 				tStates.add(temp.BoardToState());
 				tActions.add(arf.expertAction(moves.get(k)));
 				temp.makeMove(moves.get(k));

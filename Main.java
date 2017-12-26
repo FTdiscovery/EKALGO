@@ -28,39 +28,54 @@ public class Main {
 		int NODES_PER_LAYER = 120;
 		double LEARN_RATE = 0.01;
 
-		
+
 		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
-		
+		EKAL.momentum = 0.4;
+
 		//Download synapses.
-		
-		EKAL.synapse0 = mxjava.loadSynapse0(EKAL, "EKALGO120");
-		EKAL.synapse1 = mxjava.loadSynapse1(EKAL, "EKALGO120");
-		EKAL.synapse2 = mxjava.loadSynapse2(EKAL, "EKALGO120");
-		EKAL.synapse3 = mxjava.loadSynapse3(EKAL, "EKALGO120");
-		EKAL.synapse4 = mxjava.loadSynapse4(EKAL, "EKALGO120");
-		EKAL.synapse5 = mxjava.loadSynapse5(EKAL, "EKALGO120");
-		EKAL.synapse6 = mxjava.loadSynapse6(EKAL, "EKALGO120");
-		EKAL.synapse7 = mxjava.loadSynapse7(EKAL, "EKALGO120");
-		EKAL.synapse8 = mxjava.loadSynapse8(EKAL, "EKALGO120");
-		EKAL.finalSynapse = mxjava.loadSynapseFinal(EKAL, "EKALGO120");	
-		
-		
-		for (int j = 0;j<200000;j++) {
-			EKAL.trainNetwork(2);
-			System.out.println("\n-------\nITERATION #"+((j+1)*2)+"\n");
-			double score = 0;
-			//check how accurate they are
-			for (int i = 0;i<SLBase.states.length;i++) {
-				String action =  arf.chosenAction(EKAL.predict(SLBase.states[i]));
-				String actual = arf.chosenAction(SLBase.actions[i]);
-				
-				//System.out.println(Arrays.toString((EKAL.predict(SLBase.states[i]))));
-				System.out.println("Chosen move by EKAL: " + action);
-				System.out.println("Chosen move by AG0: " + actual + "\n---");
-				if (actual.equals(action)) score+=(1.0/SLBase.states.length);
+		boolean download = true;
+		if (download) {
+			EKAL.synapse0 = mxjava.loadSynapse0(EKAL, "EKALGO120");
+			EKAL.synapse1 = mxjava.loadSynapse1(EKAL, "EKALGO120");
+			EKAL.synapse2 = mxjava.loadSynapse2(EKAL, "EKALGO120");
+			EKAL.synapse3 = mxjava.loadSynapse3(EKAL, "EKALGO120");
+			EKAL.synapse4 = mxjava.loadSynapse4(EKAL, "EKALGO120");
+			EKAL.synapse5 = mxjava.loadSynapse5(EKAL, "EKALGO120");
+			EKAL.synapse6 = mxjava.loadSynapse6(EKAL, "EKALGO120");
+			EKAL.synapse7 = mxjava.loadSynapse7(EKAL, "EKALGO120");
+			EKAL.synapse8 = mxjava.loadSynapse8(EKAL, "EKALGO120");
+			EKAL.finalSynapse = mxjava.loadSynapseFinal(EKAL, "EKALGO120");	
+		}
+
+		double sc = 0;
+		for (int i = 0;i<SLBase.states.length;i++) {
+			String action =  arf.chosenAction(EKAL.predict(SLBase.states[i]));
+			String actual = arf.chosenAction(SLBase.actions[i]);
+			if (actual.equals(action)) sc+=(1.0/SLBase.states.length);
+		}
+		System.out.println("SAVED SYNAPSES: " + (sc*100) +"% correct.");
+
+
+		boolean training = true;
+		//Training.
+		if (training) {
+			for (int j = 0;j<5000;j++) {
+				EKAL.trainNetwork(2);
+				System.out.println("\n-------\nITERATION #"+((j+1)*2)+"\n");
+				double score = 0;
+				//check how accurate they are
+				for (int i = 0;i<SLBase.states.length;i++) {
+					String action =  arf.chosenAction(EKAL.predict(SLBase.states[i]));
+					String actual = arf.chosenAction(SLBase.actions[i]);
+
+					//System.out.println(Arrays.toString((EKAL.predict(SLBase.states[i]))));
+					System.out.println("Chosen move by EKAL: " + action);
+					System.out.println("Chosen move by AG0: " + actual + "\n---");
+					if (actual.equals(action)) score+=(1.0/SLBase.states.length);
+				}
+				System.out.println((score*100) +"% correct.");
+				if (score>0.2 && j%200==0) mxjava.outputSynapses(EKAL,"EKALGO120");
 			}
-			System.out.println((score*100) +"% correct.");
-			if (j%1000==0) mxjava.outputSynapses(EKAL,"EKALGO120");
 		}
 	}
 }

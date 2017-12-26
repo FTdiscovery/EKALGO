@@ -64,7 +64,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse1.length][brain.synapse1[0].length];
 		int count = 0;
 		while ((word = b2.readLine()) != null) {
-			newSyn[count/brain.synapse1.length][count%brain.synapse1.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse1[0].length][count%brain.synapse1[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -77,7 +77,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse2.length][brain.synapse2[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse2.length][count%brain.synapse2.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse2[0].length][count%brain.synapse2[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -90,7 +90,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse3.length][brain.synapse3[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse3.length][count%brain.synapse3.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse3[0].length][count%brain.synapse3[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -103,7 +103,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse4.length][brain.synapse4[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse4.length][count%brain.synapse4.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse4[0].length][count%brain.synapse4[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -116,7 +116,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse5.length][brain.synapse5[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse5.length][count%brain.synapse5.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse5[0].length][count%brain.synapse5[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -129,7 +129,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse6.length][brain.synapse6[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse6.length][count%brain.synapse6.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse6[0].length][count%brain.synapse6[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -142,7 +142,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse7.length][brain.synapse7[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse7.length][count%brain.synapse7.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse7[0].length][count%brain.synapse7[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -155,7 +155,7 @@ public class mxjava {
 		double[][] newSyn = new double[brain.synapse8.length][brain.synapse8[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count/brain.synapse8.length][count%brain.synapse8.length] = Double.parseDouble(word);
+			newSyn[count/brain.synapse8[0].length][count%brain.synapse8[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -168,7 +168,8 @@ public class mxjava {
 		double[][] newSyn = new double[brain.finalSynapse.length][brain.finalSynapse[0].length];
 		int count = 0;
 		while ((word = buffer.readLine()) != null) {
-			newSyn[count%(brain.finalSynapse.length)][count%brain.finalSynapse[0].length] = Double.parseDouble(word);
+			//System.out.println(count/(brain.finalSynapse[0].length) + ", " + count%brain.finalSynapse[0].length);
+			newSyn[count/(brain.finalSynapse[0].length)][count%brain.finalSynapse[0].length] = Double.parseDouble(word);
 			count++;
 		}
 		return newSyn;
@@ -176,7 +177,7 @@ public class mxjava {
 	
 	
 	public static void outputSynapses(GoBrain brain, String direct) throws IOException {
-		System.out.println("Updated Synapses.");
+		System.out.println("updating synapses...");
 		//Put all the information into a document. Print first layer of synapses. Stock Information not stored here.
 		int buffSize = 8192*16;
 		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse";
@@ -300,7 +301,7 @@ public class mxjava {
 		out9.close();
 		out10.close();
 	}
-
+	
 	public static double sigmoidPackage(double x, boolean deriv) {
 		if (deriv) {
 			return x*(1-x);
