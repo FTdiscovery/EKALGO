@@ -59,7 +59,7 @@ public class Library {
 					tActions.add(arf.expertAction(moves.get(k)));
 				}
 				else {
-					System.out.println("Duplicate State.");
+					System.out.println(stateSeen);
 					tActions.set(stateSeen, arf.compoundActions(tActions.get(stateSeen),arf.expertAction(moves.get(k))));
 				}
 				
@@ -77,6 +77,7 @@ public class Library {
 			}
 			System.out.println("Finished importing \"" + books[i] + "\".");
 		}
+		
 		//Convert ArrayList into Array.
 		states = new double[tStates.size()][723];
 		actions = new double[tActions.size()][361];

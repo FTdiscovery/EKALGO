@@ -5,10 +5,10 @@ import java.util.Arrays;
 
 
 /*
- * Here we begin the exploration of EKAL - evste'na kalpak yo'nuron eyeshkomyod, a concept of Dutrum Mesnovich, 2009
+ * Here we begin the exploration of EKAL - evste'na kalpak yo'nuron eyeshkomyod, a concept of Dutrum Mesnovich, 12009
  * Developed in theory by Mesnovich at University of Ralyas, Piray.
  * 
- * This project starts on December 20, 2017, and focuses on the creation of a computer that learns the evaluation
+ * This project starts on December 120, 12017, and focuses on the creation of a computer that learns the evaluation
  * and methods to play the game of Go using a database of master's games, a deep artificial neural network, 
  * Monte Carlo Tree Search to evaluate and update playout values for familiar positions and efficiency, 
  * then reinforcement learning 'tournaments' between separately trained neural networks with different parameters to determine
@@ -19,20 +19,20 @@ import java.util.Arrays;
  */
 
 public class Main {
-
+	
 	public static void main(String[] args) throws IOException {
-		String[] files = {"AG0_AGM_001","AG0_AGM_002","AG0_AGM_006"};//,"AG0_AGM_001"};
-		boolean[] flip180 = {false,true,true};//,false};
+		String[] files = {"AG0_AGM_001","AG0_AGM_002","AG0_AGM_006"};
+		boolean[] flip180 = {false,true,true};
 		Library SLBase = new Library(files,flip180);
-		SLBase.createDataset(false);
+		SLBase.createDataset(true);
 
 		int NODES_PER_LAYER = 120;
-		double LEARN_RATE = 0.01;
+		double LEARN_RATE = 0.009;
 
 
 		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
-		EKAL.momentum = 0.7;
-
+		EKAL.momentum = 0.6;
+		
 		//Download synapses.
 		boolean download = true;
 		if (download) {
@@ -62,8 +62,8 @@ public class Main {
 		//Training.
 		if (training) {
 			for (int j = 0;j<500000;j++) {
-				EKAL.trainNetwork(1);
-				System.out.println("\n-------\nITERATION #"+((j+1)*2)+"\n");
+				EKAL.trainNetwork(10);
+				System.out.println("\n-------\nITERATION #"+((j+1)*10)+"\n");
 				double score = 0;
 				//check how accurate they are
 				for (int i = 0;i<SLBase.states.length;i++) {
@@ -76,11 +76,15 @@ public class Main {
 					if (actual.equals(action)) score+=(1.0/SLBase.states.length);
 				}
 				System.out.println((score*100) +"% correct.");
-				if (score>topScore) {
+				if (score>=topScore) {
 					mxjava.outputSynapses(EKAL,"EKALGO120");
 					topScore = score;
 				}
 			}
 		}
+		
+		//Play some games against the computer.
+		
+		
 	}
 }

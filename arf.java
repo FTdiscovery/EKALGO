@@ -17,7 +17,22 @@ public class arf {
 		return -1;
 	}
 	
+	public static boolean chainAlreadySeen(ArrayList<int[]> states, int[] current) {
+		for (int i = 0;i<states.size();i++) {
+			if (sameIntArray(states.get(i),current)) return true;
+		}
+		return false;
+	}
+	
 	public static boolean sameArray(double[] a,double[] b) {
+		if (a.length!=b.length) return false;
+		for (int i = 0;i<a.length;i++) {
+			if (a[i]!=b[i]) return false;
+		}
+		return true;
+	}
+	
+	public static boolean sameIntArray(int[] a,int[] b) {
 		if (a.length!=b.length) return false;
 		for (int i = 0;i<a.length;i++) {
 			if (a[i]!=b[i]) return false;
@@ -60,6 +75,17 @@ public class arf {
 		int row = 19-(max/19);
 		System.out.println(array[max]);
 		return ALPHABET.split("")[col]+row;
+	}
+	
+	public static int[] connectArrays(int[] a, int[] b) {
+		int[] newArray = new int[a.length+b.length];
+		for (int i = 0;i<a.length;i++) {
+			newArray[i] = a[i];
+		}
+		for (int j = 0;j<b.length;j++) {
+			newArray[j+a.length] = b[j];
+		}
+		return newArray;
 	}
 			
 	public static int[] inaccStones(int[] stones, int[] wrongSurround) {
