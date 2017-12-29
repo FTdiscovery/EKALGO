@@ -19,12 +19,14 @@ import java.util.Arrays;
  */
 
 public class Main {
-	
+
 	public static void main(String[] args) throws IOException {
 		String[] files = {"AG0_AGM_001","AG0_AGM_002","AG0_AGM_006"};
 		boolean[] flip180 = {false,true,true};
-		Library SLBase = new Library(files,flip180);
-		SLBase.createDataset(true);
+		boolean[] flip90CC = {false,false,false};
+		boolean[] flip90C = {false,false,false};
+		Library SLBase = new Library(files,flip180,flip90CC,flip90C);
+		SLBase.createDataset(false);
 
 		int NODES_PER_LAYER = 120;
 		double LEARN_RATE = 0.009;
@@ -32,7 +34,7 @@ public class Main {
 
 		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
 		EKAL.momentum = 0.6;
-		
+
 		//Download synapses.
 		boolean download = true;
 		if (download) {
@@ -58,7 +60,8 @@ public class Main {
 
 
 		boolean training = true;
-		double topScore = 0;
+		double topScore = (double) sc/SLBase.states.length;
+		System.out.println(topScore);
 		//Training.
 		if (training) {
 			for (int j = 0;j<500000;j++) {
@@ -82,9 +85,10 @@ public class Main {
 				}
 			}
 		}
-		
+
 		//Play some games against the computer.
-		
-		
+
+
+
 	}
 }

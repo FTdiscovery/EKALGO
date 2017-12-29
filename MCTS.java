@@ -1,5 +1,7 @@
 package ekalGO;
 
+import java.util.ArrayList;
+
 /*
  * This is a class that goes through the most basic functions and algorithms required for the Monte Carlo Tree Search. 
  * 
@@ -8,4 +10,16 @@ package ekalGO;
  */
 public class MCTS {
 
+	double[][] states;
+	double[][] actions;
+	double[][] wins;
+	
+	//These will be updated as parameters from the Library.
+	public MCTS(ArrayList<double[]> states, ArrayList<double[]> actions) {
+		for (int i = 0;i<states.size();i++) { //theoretically states and actions should have the same size.
+			this.states[i]=states.get(i);
+			this.actions[i]=actions.get(i);
+		}
+		wins = new double[this.actions.length][361];
+	}
 }

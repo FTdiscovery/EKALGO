@@ -21,6 +21,8 @@ public class Library {
 	//Go Books!!!
 	String[] books;
 	boolean[] flipAction180;
+	boolean[] flipAction90CC;
+	boolean[] flipAction90C;
 	String documents = System.getProperty ("user.home") + "/Documents/Go Books/";
 	ArrayList<double[]> tStates = new ArrayList<>();
 	ArrayList<double[]> tActions = new ArrayList<>();
@@ -28,9 +30,11 @@ public class Library {
 	double[][] states;
 	double[][] actions;
 
-	public Library(String[] a, boolean[] b) {
+	public Library(String[] a, boolean[] b,boolean[] c, boolean[] d) {
 		books = a;
 		flipAction180 = b;
+		flipAction90CC = c;
+		flipAction90C = d;
 	}
 
 	public void createDataset(boolean watchGame) throws IOException {
@@ -43,6 +47,12 @@ public class Library {
 			while ((word = buffer.readLine()) != null) {
 				if (flipAction180[i]) {
 					moves.add(mxjava.flipAction180(word));
+				}
+				else if (flipAction90CC[i]) {
+					moves.add(mxjava.flipAction90CC(word));
+				}
+				else if (flipAction90C[i]) {
+					moves.add(mxjava.flipAction90C(word));
 				}
 				else {
 					moves.add(word);
@@ -60,6 +70,7 @@ public class Library {
 				}
 				else {
 					System.out.println(stateSeen);
+					System.out.println("DUPLICATE");
 					tActions.set(stateSeen, arf.compoundActions(tActions.get(stateSeen),arf.expertAction(moves.get(k))));
 				}
 				

@@ -41,6 +41,23 @@ public class Board {
 		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column		
 		return ALPHABET.split("")[18-directory]+(20-Integer.parseInt(move.substring(1)));
 	}
+	
+	public String flipAction90CC(String move) {
+		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column
+		int row = Integer.parseInt(move.substring(1))-10; // this is row
+		int newCol=-row+10; 
+		int newRow=column+10;
+		return ALPHABET.split("")[newCol-1]+(newRow+1);	
+	}
+	
+	public String flipAction90C(String move) {
+		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column
+		int row = Integer.parseInt(move.substring(1))-10; // this is row
+		int newCol=row+10; 
+		int newRow=-column+10;
+		return ALPHABET.split("")[newCol-1]+(newRow-1);	
+	}
+	
 
 	public void printBoard() {
 		System.out.println("CURRENT STATE:\n\n   A B C D E F G H J K L M N O P Q R S T");
@@ -332,8 +349,12 @@ public class Board {
 		go.updateBoard();
 		go.printBoard();
 		go.makeMove("D3");
+		
+		go.printAllChains();
 		go.updateBoard();
 		go.printBoard();
+		System.out.println(go.flipAction90CC(go.flipAction90C("Q4")));
+		
 
 	}
 }

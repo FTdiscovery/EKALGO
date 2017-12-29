@@ -181,6 +181,24 @@ public class mxjava {
 		return ALPHABET.split("")[18-directory]+(20-Integer.parseInt(move.substring(1)));
 	}
 	
+	public static String flipAction90CC(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column
+		int row = Integer.parseInt(move.substring(1))-10; // this is row
+		int newCol=-row+10; 
+		int newRow=column+10;
+		return ALPHABET.split("")[newCol-1]+(newRow+1);	
+	}
+	
+	public static String flipAction90C(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column
+		int row = Integer.parseInt(move.substring(1))-10; // this is row
+		int newCol=row+10; 
+		int newRow=-column+10;
+		return ALPHABET.split("")[newCol-1]+(newRow-1);	
+	}
+	
 	public static void outputSynapses(GoBrain brain, String direct) throws IOException {
 		System.out.println("updating synapses...");
 		//Put all the information into a document. Print first layer of synapses. Stock Information not stored here.
