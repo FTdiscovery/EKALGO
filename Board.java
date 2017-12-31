@@ -25,6 +25,7 @@ public class Board {
 	int[][] wSurChains;
 	int[][] bChains;
 	int[][] bSurChains;
+	int illegalKo;
 
 	public Board() {
 		GO_BOARD = new double[19][19][2];
@@ -58,6 +59,17 @@ public class Board {
 		return ALPHABET.split("")[newCol-1]+(newRow-1);	
 	}
 	
+	public String mirrorY(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		return ALPHABET.split("")[18-directory]+move.substring(1);
+	}
+	
+	public String mirrorX(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		return ALPHABET.split("")[directory]+(20-Integer.parseInt(move.substring(1)));
+	}
 
 	public void printBoard() {
 		System.out.println("CURRENT STATE:\n\n   A B C D E F G H J K L M N O P Q R S T");
@@ -85,26 +97,27 @@ public class Board {
 		directory[1] = 19-Integer.parseInt(move.substring(1)); //this is row
 		int whom = turns%2;
 		if (GO_BOARD[directory[1]][directory[0]][whom]==1) System.out.println("ERROR");
+		else if ((directory[1]*19+directory[0])==illegalKo) System.out.println("illegal ko error");
 		else {
 			GO_BOARD[directory[1]][directory[0]][whom]=1;
 			turns++;
 		}
+		illegalKo = (directory[1]*19+directory[0]);
 	}
 
 	public double[] BoardToState() {
 
-		double[] output = new double[723];
+		double[] output = new double[361*3+1];
 		for (int i = 0;i<19;i++) {
 			for (int j = 0;j<19;j++) {
-				output[38*i+2*j] = GO_BOARD[i][j][0];
-				output[38*i+2*j+1] = GO_BOARD[i][j][1];
-				if (output[38*i+2*j]==0 && output[38*i+2*j+1]==0) {
-					output[38*i+2*j+1]=-1;
-					output[38*i+2*j]=-1;
+				output[57*i+3*j] = GO_BOARD[i][j][0];
+				output[57*i+3*j+1] = GO_BOARD[i][j][1];
+				if (output[57*i+3*j]==0 && output[57*i+3*j+1]==0) {
+					output[57*1+3*j+2]=1;
 				}
 			}
 		}
-		output[722]=turns%2;
+		output[361*3]=turns%2;
 		return mxjava.connectArrays(output,ConvolutionsNN.processed(GO_BOARD));
 	}
 
@@ -353,7 +366,8 @@ public class Board {
 		go.printAllChains();
 		go.updateBoard();
 		go.printBoard();
-		System.out.println(go.flipAction90CC(go.flipAction90C("Q4")));
+		System.out.println(go.mirrorX("Q4"));
+		System.out.println(go.mirrorY(go.mirrorY("Q4")));
 		
 
 	}

@@ -181,6 +181,18 @@ public class mxjava {
 		return ALPHABET.split("")[18-directory]+(20-Integer.parseInt(move.substring(1)));
 	}
 	
+	public static String mirrorY(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		return ALPHABET.split("")[18-directory]+move.substring(1);
+	}
+	
+	public static String mirrorX(String move) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		return ALPHABET.split("")[directory]+(20-Integer.parseInt(move.substring(1)));
+	}
+	
 	public static String flipAction90CC(String move) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column

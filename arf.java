@@ -53,7 +53,7 @@ public class arf {
 	
 	public static double[] expertAction(String move) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
-		double[] action = new double[361];
+		double[] action = new double[362]; //Directory 361 is for pass.
 		for (int d = 0;d<action.length;d++) {
 			action[d]=0;
 		}
@@ -62,6 +62,23 @@ public class arf {
 		action[(j*19)+i]=0.5;
 		return action;
 	}
+	
+	public static String trainingActionArray(double[] array) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		String answers="";
+		int max = 0;
+		for (int i = 1;i<array.length;i++) {
+			if (array[i]==0.5) {
+				max=i;
+				int col = max%19;
+				int row = 19-(max/19);
+				answers += ALPHABET.split("")[col]+row;
+				if (max==361) return "PASS";
+			}
+		}
+		return answers;
+	} 
+	
 	
 	public static String chosenAction(double[] array) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
@@ -74,6 +91,7 @@ public class arf {
 		int col = max%19;
 		int row = 19-(max/19);
 		System.out.println(array[max]);
+		if (max==361) return "PASS";
 		return ALPHABET.split("")[col]+row;
 	}
 	

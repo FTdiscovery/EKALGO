@@ -23,6 +23,9 @@ public class Library {
 	boolean[] flipAction180;
 	boolean[] flipAction90CC;
 	boolean[] flipAction90C;
+	boolean[] mirrorX;
+	boolean[] mirrorY;
+	
 	String documents = System.getProperty ("user.home") + "/Documents/Go Books/";
 	ArrayList<double[]> tStates = new ArrayList<>();
 	ArrayList<double[]> tActions = new ArrayList<>();
@@ -30,11 +33,13 @@ public class Library {
 	double[][] states;
 	double[][] actions;
 
-	public Library(String[] a, boolean[] b,boolean[] c, boolean[] d) {
+	public Library(String[] a, boolean[] b,boolean[] c, boolean[] d,boolean[] e, boolean[] f) {
 		books = a;
 		flipAction180 = b;
 		flipAction90CC = c;
 		flipAction90C = d;
+		mirrorX = e;
+		mirrorY = f;
 	}
 
 	public void createDataset(boolean watchGame) throws IOException {
@@ -54,6 +59,12 @@ public class Library {
 				else if (flipAction90C[i]) {
 					moves.add(mxjava.flipAction90C(word));
 				}
+				else if (mirrorX[i]) {
+					moves.add(mxjava.mirrorX(word));
+				}
+				else if (mirrorY[i]) {
+					moves.add(mxjava.mirrorY(word));
+				}
 				else {
 					moves.add(word);
 				}
@@ -62,7 +73,7 @@ public class Library {
 
 			//Game will be downloaded as "moves" arraylist, for which the play out should happen immediately.
 			Board temp = new Board();
-			for (int k = 0;k<moves.size();k++) {
+			for (int k = 0;k<40;k++) {
 				int stateSeen = arf.stateAlreadySeen(tStates,temp.BoardToState());
 				if (stateSeen<0) {
 					tStates.add(temp.BoardToState());
