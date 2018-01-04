@@ -14,6 +14,8 @@ import java.util.Arrays;
  * Admittedly, this class is rather meta (it's a library for the library). 
  * 
  * Nonetheless, it will play the games and connect each state with the next action.
+ * 
+ * The value is scaled from 0 to 1. 1 is probability for a black win, 0 suggests a white win.
  */
 
 public class Library {
@@ -25,23 +27,28 @@ public class Library {
 	boolean[] flipAction90C;
 	boolean[] mirrorX;
 	boolean[] mirrorY;
-	
+	boolean[] blackWin;
+
 	String documents = System.getProperty ("user.home") + "/Documents/Go Books/";
 	ArrayList<double[]> tStates = new ArrayList<>();
 	ArrayList<double[]> tActions = new ArrayList<>();
+	ArrayList<Integer> duplicateCount = new ArrayList<>();
 	
+
 	double[][] states;
 	double[][] actions;
 
-	public Library(String[] a, boolean[] b,boolean[] c, boolean[] d,boolean[] e, boolean[] f) {
+	public Library(String[] a, boolean[] b,boolean[] c, boolean[] d,boolean[] e, boolean[] f, boolean[] g) {
 		books = a;
 		flipAction180 = b;
 		flipAction90CC = c;
 		flipAction90C = d;
 		mirrorX = e;
 		mirrorY = f;
+		blackWin = g;
 	}
 
+	//Eventually, changes with the arf action has to be done such that it is able to reward the winner of games.
 	public void createDataset(boolean watchGame) throws IOException {
 		for (int i = 0;i<books.length;i++) {
 			FileReader book = new FileReader (documents + books[i]+".txt");
@@ -68,23 +75,41 @@ public class Library {
 				else {
 					moves.add(word);
 				}
-				
+
 			}
 
 			//Game will be downloaded as "moves" arraylist, for which the play out should happen immediately.
 			Board temp = new Board();
-			for (int k = 0;k<40;k++) {
+			for (int k = 0;k<80;k++) {
 				int stateSeen = arf.stateAlreadySeen(tStates,temp.BoardToState());
+				double value = (blackWin[i])? (0.5+(((double)(k+1)/moves.size())*0.4)):(0.5-(((double)(k+1)/moves.size())*0.4));
 				if (stateSeen<0) {
-					tStates.add(temp.BoardToState());
-					tActions.add(arf.expertAction(moves.get(k)));
+					if (k%2==0) { //Even denotes black's turn, Odd denotes white's turn
+						tStates.add(temp.BoardToState());
+						tActions.add(arf.expertAction(moves.get(k),value));
+						duplicateCount.add(0);
+					}
+					if (k%2==1) { //Even denotes black's turn, Odd denotes white's turn
+						tStates.add(temp.BoardToState());
+						tActions.add(arf.expertAction(moves.get(k),value));
+						duplicateCount.add(0);
+					}
 				}
 				else {
-					System.out.println(stateSeen);
-					System.out.println("DUPLICATE");
-					tActions.set(stateSeen, arf.compoundActions(tActions.get(stateSeen),arf.expertAction(moves.get(k))));
+					if (k%2==0) {
+						System.out.println(stateSeen);
+						System.out.println("DUPLICATE");
+						duplicateCount.set(stateSeen, duplicateCount.get(stateSeen)+1);
+						tActions.set(stateSeen, arf.compoundActions(duplicateCount.get(stateSeen),tActions.get(stateSeen),arf.expertAction(moves.get(k),value)));
+					}
+					if (k%2==1) {
+						System.out.println(stateSeen);
+						System.out.println("DUPLICATE");
+						duplicateCount.set(stateSeen, duplicateCount.get(stateSeen)+1);
+						tActions.set(stateSeen, arf.compoundActions(duplicateCount.get(stateSeen),tActions.get(stateSeen),arf.expertAction(moves.get(k),value)));
+					}
 				}
-				
+
 				temp.makeMove(moves.get(k));
 				temp.updateBoard();
 				if (watchGame) {
@@ -99,7 +124,7 @@ public class Library {
 			}
 			System.out.println("Finished importing \"" + books[i] + "\".");
 		}
-		
+
 		//Convert ArrayList into Array.
 		states = new double[tStates.size()][723];
 		actions = new double[tActions.size()][361];
@@ -107,6 +132,6 @@ public class Library {
 			states[i]=tStates.get(i);
 			actions[i]=tActions.get(i);
 		}
-		
+
 	}
 }

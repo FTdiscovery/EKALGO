@@ -40,26 +40,30 @@ public class arf {
 		return true;
 	}
 	
-	public static double[] compoundActions(double[] a, double[] b) {
+	public static double[] compoundActions(int dup, double[] a, double[] b) {
 		double[] action = new double[a.length];
 		for (int i = 0;i<a.length;i++) {
-			action[i]=a[i];
-			if (a[i]==0) {
-				action[i]+=b[i];
+			if (a[i]==0 || b[i]==0) action[i]=Math.max(a[i], b[i]); 
+			//If action exists in both and has different values, then average them out and trust the MCTS.
+			//Note: it's probably nice to note how many duplicates a state has to make this more accurate.
+			else {
+				double kye = a[i]*((double)dup);
+				action[i] = (kye+b[i])/((double)dup+1);
 			}
+			
 		}
 		return action;
 	}
 	
-	public static double[] expertAction(String move) {
+	public static double[] expertAction(String move, double value) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		double[] action = new double[362]; //Directory 361 is for pass.
 		for (int d = 0;d<action.length;d++) {
-			action[d]=0;
+			action[d]=0; //might change this...
 		}
 		int i = ALPHABET.indexOf(move.substring(0,1)); //this is column
 		int j = 19-Integer.parseInt(move.substring(1)); //this is row
-		action[(j*19)+i]=0.5;
+		action[(j*19)+i]=value;
 		return action;
 	}
 	
@@ -68,14 +72,21 @@ public class arf {
 		String answers="";
 		int max = 0;
 		for (int i = 1;i<array.length;i++) {
-			if (array[i]==0.5) {
+			if (array[i]>array[max]) {
+				max=i;
+				int col = max%19;
+				int row = 19-(max/19);
+				answers = ALPHABET.split("")[col]+row;
+			}
+			else if (array[i]==array[max]) {
 				max=i;
 				int col = max%19;
 				int row = 19-(max/19);
 				answers += ALPHABET.split("")[col]+row;
-				if (max==361) return "PASS";
 			}
 		}
+		System.out.println(array[max]); //just for check.
+		if (max==361) return "PASS";
 		return answers;
 	} 
 	

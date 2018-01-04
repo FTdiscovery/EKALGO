@@ -225,6 +225,12 @@ public class GoBrain {
 
 			//finalLayer delta
 			double[][] finalLayerError = mxjava.subtract(OUTPUT_VALUES,finalLayer);
+			/* This is without L1/L2 normalization. 
+			 * For L1, create absolute value subtract.
+			 * For L2, create squared error.
+			 * Alternatively, the L2 Regularization Formula used by Google can be used.
+			 */
+			
 			double[][] sigmoidDerivativeForfinalLayer = new double[finalLayer.length][finalLayer[0].length];
 			for (int i = 0;i<finalLayer.length;i++) {
 				for (int j = 0;j<finalLayer[0].length;j++) {

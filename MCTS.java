@@ -13,8 +13,12 @@ public class MCTS {
 	double[][] states;
 	double[][] actions;
 	double[][] wins;
+	double[][] n;
+	double[][] t;
 	
-	//These will be updated as parameters from the Library.
+	//A MCTS should be paired with a neural network, but a 'root' library of training games at each rollout has to be saved.
+	//Similarly, the MCTS should be imported.
+	
 	public MCTS(ArrayList<double[]> states, ArrayList<double[]> actions) {
 		for (int i = 0;i<states.size();i++) { //theoretically states and actions should have the same size.
 			this.states[i]=states.get(i);

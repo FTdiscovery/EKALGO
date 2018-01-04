@@ -10,9 +10,19 @@ public class Board {
 	/*
 	 * Representation of the board! This is a 3D array, where each square on the board holds two values.
 	 * Black stone is [x][y][0], White stone is [x][y][1]
+	 * 
+	 * Actually, the neural network input SHOULD have history. The last two moves can dictate the best action at a certain time
+	 * (i.e. a ko capture could theoretically be the best move, but due to the circumstances, is not exercised.)
 	 */
-
+	
 	double[][][] GO_BOARD;
+	
+	//These will actually be important...hmm...update them after each move.
+	double[][][][] PLIES_BEFORE_BOARD = new double[3][19][19][2];
+	//This is a 4D array - the ply before is [0], 2 plies before is [1]...etc. Google uses 7, let's use 3.
+	
+	//Apart from illegal Ko, there must be a rule that prohibits a user from moving a stone where it will instantly die.
+	
 	String[][] PRINTED;
 	String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 	int turns = 0;
@@ -26,6 +36,7 @@ public class Board {
 	int[][] bChains;
 	int[][] bSurChains;
 	int illegalKo;
+	int turnOfIllegalKo;
 
 	public Board() {
 		GO_BOARD = new double[19][19][2];
@@ -97,32 +108,53 @@ public class Board {
 		directory[1] = 19-Integer.parseInt(move.substring(1)); //this is row
 		int whom = turns%2;
 		if (GO_BOARD[directory[1]][directory[0]][whom]==1) System.out.println("ERROR");
-		else if ((directory[1]*19+directory[0])==illegalKo) System.out.println("illegal ko error");
+		else if ((directory[1]*19+directory[0])==illegalKo && (turns-1)==turnOfIllegalKo) System.out.println("illegal ko error");
+		
 		else {
+			//The move is legal, thus we can update the boards.
+			//the board on [0] needs to go to [1], the board on [1] needs to go to [2], meanwhile the current board is [0].
+			
+			PLIES_BEFORE_BOARD[0]=GO_BOARD; //The last configuration of the board after the move will be the current state.
+			for (int i = 1;i<PLIES_BEFORE_BOARD.length;i++) {
+				PLIES_BEFORE_BOARD[i]=PLIES_BEFORE_BOARD[i-1];
+			}
+			//make the move, change the board.
 			GO_BOARD[directory[1]][directory[0]][whom]=1;
 			turns++;
+			//if the turn has no capture, then remove the illegalKo.
 		}
-		illegalKo = (directory[1]*19+directory[0]);
 	}
 
+	
 	public double[] BoardToState() {
+		double[] state = OneBoardToState(GO_BOARD);
+		for (int i = 0;i<PLIES_BEFORE_BOARD.length;i++) {
+			state = mxjava.connectArrays(state, OneBoardToState(PLIES_BEFORE_BOARD[i]));
+		}
+		return state;
+	}
+	//do OneBoardToState() to the current board, then all the boards of previous plies.
+	
+	public double[] OneBoardToState(double[][][] BOARD) {
 
 		double[] output = new double[361*3+1];
 		for (int i = 0;i<19;i++) {
 			for (int j = 0;j<19;j++) {
-				output[57*i+3*j] = GO_BOARD[i][j][0];
-				output[57*i+3*j+1] = GO_BOARD[i][j][1];
+				output[57*i+3*j] = BOARD[i][j][0];
+				output[57*i+3*j+1] = BOARD[i][j][1];
 				if (output[57*i+3*j]==0 && output[57*i+3*j+1]==0) {
 					output[57*1+3*j+2]=1;
 				}
 			}
 		}
 		output[361*3]=turns%2;
-		return mxjava.connectArrays(output,ConvolutionsNN.processed(GO_BOARD));
+		return mxjava.connectArrays(output,ConvolutionsNN.processed(BOARD));
 	}
 
 	//Set the rules of Go, Captures for single stones done.
 	public void updateBoard() {
+		turnOfIllegalKo=999;
+		illegalKo=999; //reset after each move, so that a new illegal ko is found once the move is made.
 		wStones.clear();
 		wSurStones.clear();
 		bStones.clear();
@@ -176,7 +208,7 @@ public class Board {
 		else {
 			if(GO_BOARD[i][j+1][k]==1 && GO_BOARD[i][j+1][1-k]==0) stoneSurround++;
 		}
-		if (stoneSurround==required) { GO_BOARD[i][j][1-k]=0; GO_BOARD[i][j][k]=0; System.out.println("Captured stone " + ((i*19)+j));}
+		if (stoneSurround==required) { illegalKo = (i*19)+j; turnOfIllegalKo=turns; GO_BOARD[i][j][1-k]=0; GO_BOARD[i][j][k]=0; System.out.println("Captured stone " + ((i*19)+j));}
 	}
 
 	/*
