@@ -20,6 +20,7 @@ public class mcf {
 		}
 		else {
 			//means move has not been explored.
+			if (w>0.1) return w; 
 			return (w*100)*c2; 
 			/* This just returns the value as estimated by the neural network, but the neural network is trained to treat
 			 * everything not seen as an invalid move. 

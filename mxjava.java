@@ -212,7 +212,6 @@ public class mxjava {
 	}
 	
 	public static void outputSynapses(GoBrain brain, String direct) throws IOException {
-		System.out.println("updating synapses...");
 		//Put all the information into a document. Print first layer of synapses. Stock Information not stored here.
 		int buffSize = 8192*16;
 		String documents = System.getProperty ("user.home") + "/Documents/EKAL/" + direct + "Synapses/" + direct + "Synapse";
@@ -335,6 +334,7 @@ public class mxjava {
 		out8.close();
 		out9.close();
 		out10.close();
+		System.out.println("Updated Synapses.");
 	}
 	
 	public static double sigmoidPackage(double x, boolean deriv) {

@@ -24,16 +24,16 @@ public class EKALMain {
 
 	public static void main(String[] args) throws IOException {
 		
-		String[] files = {"AG0_AG0_5185", "AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5125", "AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125"};
+		String[] files = {"AG0_AG0_5185", "AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5125", "AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002"};
 		//this below will be generalized later on, checking if this is beneficial first.
-		boolean[] flip180 = {false,true,false,false,false,false,false,true,false,false,false,false};
-		boolean[] flip90CC = {false,false,true,false,false,false,false,false,true,false,false,false};
-		boolean[] flip90C = {false,false,false,true,false,false,false,false,false,true,false,false};
-		boolean[] mirrorX = {false,false,false,false,true,false,false,false,false,false,true,false};
-		boolean[] mirrorY = {false,false,false,false,false,true,false,false,false,false,false,true};
+		boolean[] flip180 = {false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false};
+		boolean[] flip90CC = {false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false};
+		boolean[] flip90C = {false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false};
+		boolean[] mirrorX = {false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false};
+		boolean[] mirrorY = {false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true};
 		//Generalized Flip function will be created. Flipping will be done after every playout.
 		//Reinforcement Playouts after Supervised Learning can create a lot of data...but training this network could take years.
-		boolean[] blackWin = {false,false,false,false,false,false,false,false,false,false,false,false};
+		boolean[] blackWin = {false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true};
 		Library SLBase = new Library(files,flip180,flip90CC,flip90C,mirrorX,mirrorY,blackWin);
 		SLBase.createDataset(false);
 		
@@ -80,7 +80,7 @@ public class EKALMain {
 		//Training.
 		if (training) {
 			for (int j = 0;j<500000;j++) {
-				EKAL.trainNetwork(20);
+				EKAL.trainNetwork(1);
 				System.out.println("\n-------\nITERATION #"+((j+1)*1)+"\n");
 				double score = 0;
 				//check how accurate they are
@@ -95,8 +95,9 @@ public class EKALMain {
 				}
 				System.out.println((score*100) +"% correct.");
 				System.out.println(topScore*100 + "%: Top Score.");
-				System.out.println("Training Data Size: " + SLBase.states.length);
+				System.out.println("Training Data Size: " + SLBase.states.length + " || Correct Action Predictions: " + SLBase.states.length*topScore);
 				if (score>=topScore) {
+					System.out.println("WARNING: DO NOT PRESS STOP, UPDATING SYNPASES!");
 					mxjava.outputSynapses(EKAL,"EKALGO80");
 					topScore = score;
 				}

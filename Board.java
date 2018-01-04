@@ -35,8 +35,8 @@ public class Board {
 	int[][] wSurChains;
 	int[][] bChains;
 	int[][] bSurChains;
-	int illegalKo;
-	int turnOfIllegalKo;
+	int illegalKo=999;
+	int turnOfIllegalKo=999;
 
 	public Board() {
 		GO_BOARD = new double[19][19][2];
