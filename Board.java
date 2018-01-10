@@ -14,15 +14,15 @@ public class Board {
 	 * Actually, the neural network input SHOULD have history. The last two moves can dictate the best action at a certain time
 	 * (i.e. a ko capture could theoretically be the best move, but due to the circumstances, is not exercised.)
 	 */
-	
+
 	double[][][] GO_BOARD;
-	
+
 	//These will actually be important...hmm...update them after each move.
 	double[][][][] PLIES_BEFORE_BOARD = new double[3][19][19][2];
 	//This is a 4D array - the ply before is [0], 2 plies before is [1]...etc. Google uses 7, let's use 3.
-	
+
 	//Apart from illegal Ko, there must be a rule that prohibits a user from moving a stone where it will instantly die.
-	
+
 	String[][] PRINTED;
 	String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 	int turns = 0;
@@ -37,7 +37,20 @@ public class Board {
 	int[][] bSurChains;
 	int illegalKo=999;
 	int turnOfIllegalKo=999;
-
+	
+	String gameLog = ";FF[4]\nGM[1]\nDT[2018-01-10]\nPB[EKALGO]\nPW[EKALGO]\nBR[30k]\nWR[30k]\nRE[]\nSZ[19]\nKM[7.5]\nRU[chinese]";
+	
+	
+	public void addToGameLog(int i, int j, boolean black) {
+		String alphabet = "abcdefghijklmnoprqs";
+		if (black) {
+			gameLog+="\n;B["+alphabet.split("")[i]+alphabet.split("")[j]+"]";
+		}
+		else {
+				gameLog+="\n;W["+alphabet.split("")[i]+alphabet.split("")[j]+"]";
+		}
+	}
+	
 	public Board() {
 		GO_BOARD = new double[19][19][2];
 		PRINTED = new String[19][19];
@@ -53,7 +66,7 @@ public class Board {
 		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column		
 		return ALPHABET.split("")[18-directory]+(20-Integer.parseInt(move.substring(1)));
 	}
-	
+
 	public String flipAction90CC(String move) {
 		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column
 		int row = Integer.parseInt(move.substring(1))-10; // this is row
@@ -61,7 +74,7 @@ public class Board {
 		int newRow=column+10;
 		return ALPHABET.split("")[newCol-1]+(newRow+1);	
 	}
-	
+
 	public String flipAction90C(String move) {
 		int column = ALPHABET.indexOf(move.substring(0,1))-10; //this is column
 		int row = Integer.parseInt(move.substring(1))-10; // this is row
@@ -69,13 +82,13 @@ public class Board {
 		int newRow=-column+10;
 		return ALPHABET.split("")[newCol-1]+(newRow-1);	
 	}
-	
+
 	public String mirrorY(String move) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column
 		return ALPHABET.split("")[18-directory]+move.substring(1);
 	}
-	
+
 	public String mirrorX(String move) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		int directory = ALPHABET.indexOf(move.substring(0,1)); //this is column
@@ -103,29 +116,37 @@ public class Board {
 	}
 
 	public void makeMove(String move) {
-		int[] directory = new int[2];
-		directory[0] = ALPHABET.indexOf(move.substring(0,1)); //this is column
-		directory[1] = 19-Integer.parseInt(move.substring(1)); //this is row
-		int whom = turns%2;
-		if (GO_BOARD[directory[1]][directory[0]][whom]==1) System.out.println("ERROR");
-		else if ((directory[1]*19+directory[0])==illegalKo && (turns-1)==turnOfIllegalKo) System.out.println("illegal ko error");
-		
-		else {
-			//The move is legal, thus we can update the boards.
-			//the board on [0] needs to go to [1], the board on [1] needs to go to [2], meanwhile the current board is [0].
-			
-			PLIES_BEFORE_BOARD[0]=GO_BOARD; //The last configuration of the board after the move will be the current state.
-			for (int i = 1;i<PLIES_BEFORE_BOARD.length;i++) {
-				PLIES_BEFORE_BOARD[i]=PLIES_BEFORE_BOARD[i-1];
-			}
-			//make the move, change the board.
-			GO_BOARD[directory[1]][directory[0]][whom]=1;
+		if (move=="PASS") {
+			if (turns%2==0) gameLog+="\n;B[]";
+			else gameLog+="\n;W[]";
 			turns++;
-			//if the turn has no capture, then remove the illegalKo.
+		}
+		else {
+			int[] directory = new int[2];
+			directory[0] = ALPHABET.indexOf(move.substring(0,1)); //this is column
+			directory[1] = 19-Integer.parseInt(move.substring(1)); //this is row
+			int whom = turns%2;
+			if (GO_BOARD[directory[1]][directory[0]][whom]==1) System.out.println("ERROR");
+			else if ((directory[1]*19+directory[0])==illegalKo && (turns-1)==turnOfIllegalKo) System.out.println("illegal ko error");
+
+			else {
+				//The move is legal, thus we can update the boards.
+				//the board on [0] needs to go to [1], the board on [1] needs to go to [2], meanwhile the current board is [0].
+
+				PLIES_BEFORE_BOARD[0]=GO_BOARD; //The last configuration of the board after the move will be the current state.
+				for (int i = 1;i<PLIES_BEFORE_BOARD.length;i++) {
+					PLIES_BEFORE_BOARD[i]=PLIES_BEFORE_BOARD[i-1];
+				}
+				//make the move, change the board.
+				GO_BOARD[directory[1]][directory[0]][whom]=1;
+				addToGameLog(directory[0],directory[1],turns%2==0);
+				turns++;
+				//if the turn has no capture, then remove the illegalKo.
+			}
 		}
 	}
 
-	
+
 	public double[] BoardToState() {
 		double[] state = OneBoardToState(GO_BOARD);
 		for (int i = 0;i<PLIES_BEFORE_BOARD.length;i++) {
@@ -134,7 +155,7 @@ public class Board {
 		return state;
 	}
 	//do OneBoardToState() to the current board, then all the boards of previous plies.
-	
+
 	public double[] OneBoardToState(double[][][] BOARD) {
 
 		double[] output = new double[361*3+1];
@@ -394,13 +415,14 @@ public class Board {
 		go.updateBoard();
 		go.printBoard();
 		go.makeMove("D3");
-		
+		System.out.println(Arrays.toString(go.BoardToState()));
+
 		go.printAllChains();
 		go.updateBoard();
 		go.printBoard();
 		System.out.println(go.mirrorX("Q4"));
 		System.out.println(go.mirrorY(go.mirrorY("Q4")));
-		
+
 
 	}
 }

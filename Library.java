@@ -80,7 +80,7 @@ public class Library {
 
 			//Game will be downloaded as "moves" arraylist, for which the play out should happen immediately.
 			Board temp = new Board();
-			for (int k = 0;k<120;k++) {
+			for (int k = 0;k<130;k++) {
 				int stateSeen = arf.stateAlreadySeen(tStates,temp.BoardToState());
 				double value = (blackWin[i])? (0.5+(((double)(k+1)/moves.size())*0.4)):(0.5-(((double)(k+1)/moves.size())*0.4));
 				if (stateSeen<0) {

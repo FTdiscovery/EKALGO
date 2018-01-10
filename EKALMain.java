@@ -24,16 +24,16 @@ public class EKALMain {
 
 	public static void main(String[] args) throws IOException {
 		
-		String[] files = {"AG0_AG0_5185", "AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5125", "AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002"};
+		String[] files = {"AG0_AG0_5185", "AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5185","AG0_AG0_5125", "AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AG0_5125","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_002","AG0_AGM_006","AG0_AGM_006","AG0_AGM_006","AG0_AGM_006","AG0_AGM_006","AG0_AGM_006"};
 		//this below will be generalized later on, checking if this is beneficial first.
-		boolean[] flip180 = {false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false};
-		boolean[] flip90CC = {false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false};
-		boolean[] flip90C = {false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false};
-		boolean[] mirrorX = {false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false};
-		boolean[] mirrorY = {false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true};
+		boolean[] flip180 = {false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false};
+		boolean[] flip90CC = {false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false};
+		boolean[] flip90C = {false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false};
+		boolean[] mirrorX = {false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false};
+		boolean[] mirrorY = {false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,true};
 		//Generalized Flip function will be created. Flipping will be done after every playout.
 		//Reinforcement Playouts after Supervised Learning can create a lot of data...but training this network could take years.
-		boolean[] blackWin = {false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true};
+		boolean[] blackWin = {false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true};
 		Library SLBase = new Library(files,flip180,flip90CC,flip90C,mirrorX,mirrorY,blackWin);
 		SLBase.createDataset(false);
 		
@@ -44,7 +44,7 @@ public class EKALMain {
 		double LEARN_RATE = 0.01;
 
 		GoBrain EKAL = new GoBrain(SLBase.states,SLBase.actions,NODES_PER_LAYER,LEARN_RATE);
-		EKAL.momentum = 0.8;
+		EKAL.momentum = 0.88;
 
 		//Download synapses.
 		boolean download = true;

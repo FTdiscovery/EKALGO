@@ -47,10 +47,8 @@ public class mxjava {
 		String word;
 		int count = 0;
 		while ((word = b1.readLine()) != null) {
-			//if (count<10) System.out.println("["+count/brain.synapse0.length+"]["+ count%brain.synapse0[0].length+"] = " + Double.parseDouble(word));
 			int number = brain.synapse0[0].length;
 			newSyn[count/number][count%brain.synapse0[0].length] = Double.parseDouble(word);
-			//if (count<100) System.out.println("["+count/number+"]["+ count%brain.synapse0[0].length+"] = " + newSyn[count/brain.synapse0[0].length][count%brain.synapse0[0].length]);
 			count++;
 			
 		}

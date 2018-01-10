@@ -67,6 +67,19 @@ public class arf {
 		return action;
 	}
 	
+	public static double[] staticExpertAction(String move, double value, boolean black) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		double[] action = new double[362]; //Directory 361 is for pass.
+		for (int d = 0;d<action.length;d++) {
+			if (black) { action[d]=0; }//might change this...
+			else { action[d]=1; }
+		}
+		int i = ALPHABET.indexOf(move.substring(0,1)); //this is column
+		int j = 19-Integer.parseInt(move.substring(1)); //this is row
+		action[(j*19)+i]=value;
+		return action;
+	}
+	
 	public static String trainingActionArray(double[] array) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		String answers="";
@@ -90,7 +103,6 @@ public class arf {
 		return answers;
 	} 
 	
-	
 	public static String chosenAction(double[] array) {
 		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
 		int max = 0;
@@ -105,6 +117,22 @@ public class arf {
 		if (max==361) return "PASS";
 		return ALPHABET.split("")[col]+row;
 	}
+	
+	public static String whiteChosenAction(double[] array) {
+		String ALPHABET = "ABCDEFGHJKLMNOPQRST";
+		int min = 0;
+		for (int i = 1;i<array.length;i++) {
+			if (array[i]<array[min]) {
+				min=i;
+			}
+		}
+		int col = min%19;
+		int row = 19-(min/19);
+		System.out.println(array[min]);
+		if (min==361) return "PASS";
+		return ALPHABET.split("")[col]+row;
+	}
+	
 	
 	public static int[] connectArrays(int[] a, int[] b) {
 		int[] newArray = new int[a.length+b.length];
